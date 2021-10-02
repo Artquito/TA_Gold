@@ -22,7 +22,7 @@
         >Daftar Order Pembelian</a-menu-item
       >
       <a-menu-item key="order_form_pembelian"
-        >Order Pembelian Barur</a-menu-item
+        >Order Pembelian Baru</a-menu-item
       >
     </a-sub-menu>
     <a-sub-menu>
@@ -37,7 +37,6 @@
       >
     </a-sub-menu>
   </a-menu>
-  {{ current }}
 </template>
 
 <script>
