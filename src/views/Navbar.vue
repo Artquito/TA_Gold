@@ -12,6 +12,7 @@
       <template #title>Master Data</template>
       <a-menu-item key="master_barang">Master Barang</a-menu-item>
       <a-menu-item key="master_supplier">Master Supplier</a-menu-item>
+      <a-menu-item key="master_pelanggan">Master Pelanggan</a-menu-item>
     </a-sub-menu>
     <a-sub-menu>
       <template #icon>
