@@ -12,6 +12,7 @@
       <template #title>Master Data</template>
       <a-menu-item key="master_barang">Master Barang</a-menu-item>
       <a-menu-item key="master_supplier">Master Supplier</a-menu-item>
+      <a-menu-item key="master_pelanggan">Master Pelanggan</a-menu-item>
     </a-sub-menu>
     <a-sub-menu>
       <template #icon>
@@ -22,7 +23,7 @@
         >Daftar Order Pembelian</a-menu-item
       >
       <a-menu-item key="order_form_pembelian"
-        >Order Pembelian Barur</a-menu-item
+        >Order Pembelian Baru</a-menu-item
       >
     </a-sub-menu>
     <a-sub-menu>
@@ -37,7 +38,6 @@
       >
     </a-sub-menu>
   </a-menu>
-  {{ current }}
 </template>
 
 <script>
