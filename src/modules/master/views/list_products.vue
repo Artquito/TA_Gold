@@ -1,36 +1,42 @@
 <template>
   <div>
-      <a-row type="flex" justify="end" style="margin: 10px 0px">
-        <a-space>
-          <a-button type="primary">
-            <template #icon>
-            <PlusOutlined />
-            </template>  
-          </a-button>
+      
+    <a-row justify="end" type="flex" style="margin:10px 0px">
+      <AppstoreOutlined />
+      <a-col flex="5">
+        <a-input-search
+        justify="right"
+        placeholder="input search text"
+        style="width: 200px"
+        />
+      </a-col>
+      
+      <a-col>
+        <a-button type="primary" flex="2">
+          <PlusOutlined :style="{fontSize: '1.1em'}"/>
+          Tambah Barang
+        </a-button>
+      </a-col>
+    </a-row>
 
-          <a-button type="primary" :size="large">
-            <template #icon>
-              <DownloadOutlined />
-            </template>
-          </a-button>
-        </a-space>
-      </a-row>
     <a-table :dataSource="data" :columns="columns" />
+    
   </div>
 </template>
 
 <script>
-import { PlusOutlined } from '@ant-design/icons-vue';
-import { DownloadOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined,DownloadOutlined } from "@ant-design/icons-vue";
 export default {
   data() {
     return {
+      
       data: [
         {
           id: "1",
           barang_nama: "Mike",
         },
       ],
+
       columns: [
         {
           title: "ID",
@@ -48,6 +54,9 @@ export default {
         DownloadOutlined,
       },
     };
+  },
+  components: {
+    PlusOutlined,
   },
 };
 </script>
