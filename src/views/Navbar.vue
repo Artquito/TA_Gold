@@ -1,7 +1,6 @@
 <template>
   <div>
     <a-space>
-      <!-- <p>Jaya Abadi</p> -->
       <a-typography-title
       style="margin: 5.5px 0px 5.5px 50px;"
       :level="3"
@@ -41,9 +40,8 @@
           <a-menu-item key="order_list_penjualan">Daftar Order Penjualan</a-menu-item>
         </a-sub-menu>
       </a-menu>
-      
+      <a-divider />
     </a-space>
-    <a-divider />
   </div>
 </template>
 
