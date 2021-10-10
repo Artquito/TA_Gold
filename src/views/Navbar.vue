@@ -41,7 +41,9 @@
           <a-menu-item key="order_list_penjualan">Daftar Order Penjualan</a-menu-item>
         </a-sub-menu>
       </a-menu>
+      
     </a-space>
+    <a-divider />
   </div>
 </template>
 
