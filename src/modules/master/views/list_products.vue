@@ -10,18 +10,20 @@
       </a-breadcrumb>
   </div>
    
-    <a-row justify="end" type="flex" style="margin:10px 0px">
+    <a-row justify="end" type="flex" style="margin:30px 0px">
       <a-col flex="5">
         <a-input-search
         justify="right"
         placeholder="input search text"
         style="width: 200px"
+        v-model:value="search_bar"
+        size="medium"
         />
       </a-col>
       
       <a-col>
         <a-button type="primary" flex="2" @click="visible=true">
-          <PlusOutlined :style="{fontSize: '1.1em'}"/>
+          <PlusOutlined />
           Tambah Barang
         </a-button>
         <a-modal v-model:visible="visible" title="Forum Input Barang">
@@ -58,10 +60,6 @@
               <a-input placeholder="Input harga jual grosir barang">
               </a-input>
             </a-form-item>
-            <a-form-item label="Harga Beli Eceran">
-              <a-input placeholder="Input beli eceran barang">
-              </a-input>
-            </a-form-item>
             <a-form-item label="Harga Jual Eceran">
               <a-input placeholder="Input jual eceran barang">
               </a-input>
@@ -79,40 +77,36 @@
       </a-col>
     </a-row>
 
-    <a-table :dataSource="data" :columns="columns" :scroll="{ x: 1800}" bordered />
+    <a-table :dataSource="filteredData" :columns="columns" :scroll="{ x: 1800}" bordered >
+      <template #harga_beli_grosir = "{text}">
+        {{formatRupiah(text,"Rp.")}}
+      </template>
+      <template #harga_jual_grosir = "{text}">
+        {{formatRupiah(text,"Rp.")}}
+      </template>
+      <template #harga_jual_eceran = "{text}">
+        {{formatRupiah(text,"Rp.")}}
+      </template>
+    </a-table>
     
   </div>
 </template>
 
 <script>
 import { PlusOutlined, AppstoreOutlined } from "@ant-design/icons-vue";
+import {DEFAULT_ENDPOINT} from "@/core/api.js";
+const axios = require("axios"); 
 export default {
-  
   data() {
     return {
-      
-      data: [
-        {
-          id: "1",
-          barang_nama: "Karburator",
-          merek:"Honda",
-          varian:"G108",
-          grosir_satuan:"bal",
-          eceran_satuan:"pcs",
-          grosir_harga_beli:"1,000,000",
-          grosir_harga_jual:"1,500,000",
-          eceran_harga_beli: "100,000",
-          eceran_harga_jual: "200,000",
-          gudang_stok:"10",
-          toko_stok:"100",
-        },
-      ],
+      search_bar:"",
+      data: [],
 
       columns: [
         {
           title: "ID",
-          dataIndex: "id",
-          key: "id",
+          dataIndex: "key",
+          key: "key",
         },
         {
           title: "Nama Barang",
@@ -144,21 +138,19 @@ export default {
           title: "Harga Beli Grosir",
           dataIndex: "harga_beli_grosir",
           key: "harga_beli_grosir",
+          slots: { customRender: 'harga_beli_grosir' },
         },
         {
           title: "Harga Jual Grosir",
           dataIndex: "harga_jual_grosir",
           key: "harga_jual_grosir",
-        },
-        {
-          title: "Harga Beli Eceran",
-          dataIndex: "harga_beli_eceran",
-          key: "harga_beli_eceran",
+          slots: { customRender: 'harga_jual_grosir' },
         },
         {
           title: "Harga Jual Eceran",
           dataIndex: "harga_jual_eceran",
           key: "harga_jual_eceran",
+          slots: { customRender: 'harga_jual_eceran' },
         },
         {
           title: "Stok Gudang",
@@ -177,6 +169,49 @@ export default {
   components: {
     PlusOutlined,
     AppstoreOutlined
+  },
+  computed : {
+			filteredData(){
+				return this.data.filter(tableData => {
+					return tableData.nama.toLowerCase().includes(this.search_bar.toLowerCase());
+				});
+			}
+			
+		},
+  methods: {
+    formatRupiah:function(angka, prefix){
+      angka = angka.toString();
+      var number_string = angka.replace(/[^,\d]/g, '').toString();
+      var split       = number_string.split(',');
+      var sisa        = split[0].length % 3;
+      var rupiah      = split[0].substr(0, sisa);
+      var ribuan      = split[0].substr(sisa).match(/\d{3}/gi);
+      var separator;
+
+      // tambahkan titik jika yang di input sudah menjadi angka ribuan
+      if(ribuan){
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+      }
+
+      rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+      return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+      },
+    getData:function(){
+    var app= this;
+
+    axios.get(DEFAULT_ENDPOINT+"/api/v1/products")
+    .then(function(response){
+        app.data = response.data;
+    })
+    .catch(function(error){
+        console.log(error);
+    });
+
+    },
+  },
+  created(){
+    this.getData();
   },
 };
 </script>
