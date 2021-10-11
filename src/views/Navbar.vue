@@ -2,8 +2,8 @@
   <div>
     <a-layout-header
       style="
-      padding: 10px 0px 10px 70px;
-      border-bottom: 2px solid #001529; 
+      padding: 15px 0px 0px 70px;
+      border-bottom: 2px solid #1b5292; 
       background-color: white;"
     >
       <a-typography-title

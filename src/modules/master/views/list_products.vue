@@ -1,8 +1,16 @@
 <template>
   <div>
-
+    <div class="breadcrums" style="margin:30px 0px">
+      <a-breadcrumb>
+        <a-breadcrumb-item>
+          <AppstoreOutlined />
+          Master Data
+        </a-breadcrumb-item>
+        <a-breadcrumb-item><a href="">Master Barang</a></a-breadcrumb-item>
+      </a-breadcrumb>
+  </div>
+   
     <a-row justify="end" type="flex" style="margin:10px 0px">
-      <AppstoreOutlined />
       <a-col flex="5">
         <a-input-search
         justify="right"
@@ -12,10 +20,62 @@
       </a-col>
       
       <a-col>
-        <a-button type="primary" flex="2">
+        <a-button type="primary" flex="2" @click="visible=true">
           <PlusOutlined :style="{fontSize: '1.1em'}"/>
           Tambah Barang
         </a-button>
+        <a-modal v-model:visible="visible" title="Forum Input Barang">
+          <template #footer>
+              <a-button key="back">Batal</a-button>
+              <a-button key="submit" type="primary" >Tambah</a-button>
+          </template>
+          <a-form layout="vertical">
+            <a-form-item label="Nama Barang">
+              <a-input placeholder="Input nama barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Merek">
+              <a-input placeholder="Input merek barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Varian">
+              <a-input placeholder="Input varian barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Satuan Grosir">
+              <a-input placeholder="Input satuan grosir barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Satuan Eceran">
+              <a-input placeholder="Input satuan eceran barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Harga Beli Grosir">
+              <a-input placeholder="Input harga beli grosir barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Harga Jual Grosir">
+              <a-input placeholder="Input harga jual grosir barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Harga Beli Eceran">
+              <a-input placeholder="Input beli eceran barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Harga Jual Eceran">
+              <a-input placeholder="Input jual eceran barang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Stok Gudang">
+              <a-input placeholder="Input stok gudang">
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Stok Toko">
+              <a-input placeholder="Input stok toko">
+              </a-input>
+            </a-form-item>
+          </a-form>
+        </a-modal>
       </a-col>
     </a-row>
 
@@ -25,8 +85,9 @@
 </template>
 
 <script>
-import { PlusOutlined,DownloadOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined, AppstoreOutlined } from "@ant-design/icons-vue";
 export default {
+  
   data() {
     return {
       
@@ -42,7 +103,7 @@ export default {
           grosir_harga_jual:"1,500,000",
           eceran_harga_beli: "100,000",
           eceran_harga_jual: "200,000",
-          awal_stok:"10",
+          gudang_stok:"10",
           toko_stok:"100",
         },
       ],
@@ -55,8 +116,8 @@ export default {
         },
         {
           title: "Nama Barang",
-          dataIndex: "barang_nama",
-          key: "barang_nama",
+          dataIndex: "nama",
+          key: "nama",
           width:300,
         },
         {
@@ -71,53 +132,51 @@ export default {
         },
         {
           title: "Satuan Grosir",
-          dataIndex: "grosir_satuan",
-          key: "grosir_satuan",
+          dataIndex: "satuan_grosir",
+          key: "satuan_grosir",
         },
         {
           title: "Satuan Eceran",
-          dataIndex: "eceran_satuan",
-          key: "eceran_satuan",
+          dataIndex: "satuan_eceran",
+          key: "satuan_eceran",
         },
         {
           title: "Harga Beli Grosir",
-          dataIndex: "grosir_harga_beli",
-          key: "grosir_harga_beli",
+          dataIndex: "harga_beli_grosir",
+          key: "harga_beli_grosir",
         },
         {
           title: "Harga Jual Grosir",
-          dataIndex: "grosir_harga_jual",
-          key: "grosir_harga_jual",
+          dataIndex: "harga_jual_grosir",
+          key: "harga_jual_grosir",
         },
         {
           title: "Harga Beli Eceran",
-          dataIndex: "eceran_harga_beli",
-          key: "eceran_harga_jual",
+          dataIndex: "harga_beli_eceran",
+          key: "harga_beli_eceran",
         },
         {
           title: "Harga Jual Eceran",
-          dataIndex: "eceran_harga_jual",
-          key: "eceran_harga_jual",
+          dataIndex: "harga_jual_eceran",
+          key: "harga_jual_eceran",
         },
         {
-          title: "Stok Awal",
-          dataIndex: "awal_stok",
-          key: "awal_stok",
+          title: "Stok Gudang",
+          dataIndex: "stok_gudang",
+          key: "stok_gudang",
         },
         {
           title: "Stok Toko",
-          dataIndex: "toko_stok",
-          key: "toko_stok",
+          dataIndex: "stok_toko",
+          key: "stok_toko",
         },
       ],
-      components:{
-        PlusOutlined,
-        DownloadOutlined,
-      },
+      visible : false,
     };
   },
   components: {
     PlusOutlined,
+    AppstoreOutlined
   },
 };
 </script>
