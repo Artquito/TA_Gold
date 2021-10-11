@@ -17,7 +17,7 @@
     <a-menu
       v-model:selectedKeys="current"
       mode="horizontal"
-      style="padding: 0 50px; margin-bottom:30px"
+      style="padding: 0px 50px; margin-bottom:0px"
     >
       <a-menu-item key="/">Dashboard</a-menu-item>
       <a-sub-menu>
