@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import Index from "@/views/index";
 import Master from "@/modules/master";
+import Login from "@/views/login.vue";
 
 const routes = [
   {
@@ -8,6 +9,10 @@ const routes = [
     name: "Index",
     component: Index,
     children: [Master.route]
+  },
+  {
+    path:"/login",
+    component:Login,
   }
 ];
 
