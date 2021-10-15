@@ -87,7 +87,7 @@
       </a-col>
     </a-row>
 
-    <a-table :dataSource="filteredData" :columns="columns" :scroll="{ x: 1800}" bordered >
+    <a-table :dataSource="filteredData" :columns="columns" :scroll="{ x: 1800, y:300}" bordered >
       <template #harga_beli_grosir = "{text}">
         {{formatRupiah(text,"Rp.")}}
       </template>
