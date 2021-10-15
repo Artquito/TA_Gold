@@ -11,7 +11,7 @@
   </div>
    
     <a-row justify="end" type="flex" style="margin:30px 0px">
-      <a-col flex="5">
+      <a-col flex="8">
         <a-input-search
         justify="right"
         placeholder="input search text"
@@ -20,60 +20,70 @@
         size="medium"
         />
       </a-col>
+
+      <!-- <a-col flex="1">
+        
+      </a-col> -->
       
-      <a-col>
-        <a-button type="primary" flex="2" @click="visible=true">
-          <PlusOutlined />
-          Tambah Barang
-        </a-button>
-        <a-modal v-model:visible="visible" title="Forum Input Barang">
-          <template #footer>
-              <a-button key="back">Batal</a-button>
-              <a-button key="submit" type="primary" >Tambah</a-button>
-          </template>
-          <a-form layout="vertical">
-            <a-form-item label="Nama Barang">
-              <a-input placeholder="Input nama barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Merek">
-              <a-input placeholder="Input merek barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Varian">
-              <a-input placeholder="Input varian barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Satuan Grosir">
-              <a-input placeholder="Input satuan grosir barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Satuan Eceran">
-              <a-input placeholder="Input satuan eceran barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Harga Beli Grosir">
-              <a-input placeholder="Input harga beli grosir barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Harga Jual Grosir">
-              <a-input placeholder="Input harga jual grosir barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Harga Jual Eceran">
-              <a-input placeholder="Input jual eceran barang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Stok Gudang">
-              <a-input placeholder="Input stok gudang">
-              </a-input>
-            </a-form-item>
-            <a-form-item label="Stok Toko">
-              <a-input placeholder="Input stok toko">
-              </a-input>
-            </a-form-item>
-          </a-form>
-        </a-modal>
+      <a-col flex="1">
+        <a-space :size=20>
+          <a-button type="primary">
+            <CloudDownloadOutlined />
+            Import CSV
+          </a-button>
+          <a-button type="primary" @click="visible=true">
+            <PlusOutlined />
+            Tambah Barang
+          </a-button>
+          <a-modal v-model:visible="visible" title="Form Input Barang">
+            <template #footer>
+                <a-button key="back">Batal</a-button>
+                <a-button key="submit" type="primary" >Tambah</a-button>
+            </template>
+            <a-form layout="vertical">
+              <a-form-item label="Nama Barang">
+                <a-input placeholder="Input nama barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Merek">
+                <a-input placeholder="Input merek barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Varian">
+                <a-input placeholder="Input varian barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Satuan Grosir">
+                <a-input placeholder="Input satuan grosir barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Satuan Eceran">
+                <a-input placeholder="Input satuan eceran barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Harga Beli Grosir">
+                <a-input placeholder="Input harga beli grosir barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Harga Jual Grosir">
+                <a-input placeholder="Input harga jual grosir barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Harga Jual Eceran">
+                <a-input placeholder="Input jual eceran barang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Stok Gudang">
+                <a-input placeholder="Input stok gudang">
+                </a-input>
+              </a-form-item>
+              <a-form-item label="Stok Toko">
+                <a-input placeholder="Input stok toko">
+                </a-input>
+              </a-form-item>
+            </a-form>
+          </a-modal>
+        </a-space>
       </a-col>
     </a-row>
 
@@ -93,7 +103,7 @@
 </template>
 
 <script>
-import { PlusOutlined, AppstoreOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined, AppstoreOutlined, CloudDownloadOutlined } from "@ant-design/icons-vue";
 import {DEFAULT_ENDPOINT} from "@/core/api.js";
 const axios = require("axios"); 
 export default {
@@ -168,7 +178,8 @@ export default {
   },
   components: {
     PlusOutlined,
-    AppstoreOutlined
+    AppstoreOutlined,
+    CloudDownloadOutlined,
   },
   computed : {
 			filteredData(){
