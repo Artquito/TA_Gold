@@ -25,6 +25,5 @@ jobs:
             cd /root/jap-frontend
             git pull origin master
             npm install
-            npm run build
-            sudo systemctl stop jaya_abadi_frontend.service
+            sudo systemctl start jaya_abadi_frontend.service
             
