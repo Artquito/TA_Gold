@@ -3,30 +3,37 @@
     <div class="child">
       <a-card class="child" title="Login" style="width: 300px">
         <a-row justify="center" :gutter="[0, 20]">
-          <a-col>
-            <a-space direction="vertical" :size="20">
+          <a-form>
+            <a-form-item>
               <a-input
                 size="large"
-                placeholder="masukan username"
+                placeholder="Masukan username"
                 v-model:value="username"
               >
                 <template #prefix>
                   <PlusOutlined />
                 </template>
               </a-input>
+            </a-form-item>
+            <a-form-item>
               <a-input-password
                 size="large"
-                placeholder="masukan password"
+                placeholder="Masukan password"
                 v-model:value="password"
               >
               </a-input-password>
-            </a-space>
-          </a-col>
-          <a-col>
-            <a-button type="primary" class="login-button" @click="userAuth()"
-              >Login</a-button
-            >
-          </a-col>
+            </a-form-item>
+            <a-form-item>
+              <a-button
+                block
+                type="primary"
+                class="login-button"
+                @click="userAuth()"
+                html-type="submit"
+                >Login</a-button
+              >
+            </a-form-item>
+          </a-form>
         </a-row>
       </a-card>
     </div>
@@ -49,22 +56,19 @@ export default {
     PlusOutlined,
   },
   methods: {
-    checkUser(code){
-      if(code == "success"){
+    checkUser(code) {
+      if (code == "success") {
         notification["success"]({
-            message: "Login Berhasil",
-            description:
-              "Mengarahkan anda ke halaman utama",
+          message: "Login Berhasil",
+          description: "Mengarahkan anda ke halaman utama",
         });
         this.$router.replace("/");
-        
-      }
-      else{
+      } else {
         notification["error"]({
-            message: "Login Gagal",
-            description:
-              "Mohon maaf username dan password tidak cocok mohon coba lagi",
-          });
+          message: "Login Gagal",
+          description:
+            "Mohon maaf username dan password tidak cocok mohon coba lagi",
+        });
       }
     },
     userAuth() {
@@ -92,13 +96,10 @@ export default {
 </script>
 
 <style scoped>
-.login-form {
+/* .login-form {
   height: 100%;
   width: 100%;
-}
-a-card.child {
-  color: blue;
-}
+} */
 .child {
   /* Center vertically and horizontally */
   position: absolute;
@@ -106,7 +107,6 @@ a-card.child {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.login-button {
-  width: 225px;
-}
+/* .login-button {
+} */
 </style>
