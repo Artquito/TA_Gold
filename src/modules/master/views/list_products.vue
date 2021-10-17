@@ -228,3 +228,10 @@ export default {
   },
 };
 </script>
+
+<style>
+  .ant-table-thead>tr>th{
+    background-color: #1b5292 !important;
+    color: white !important;
+  }
+</style>
