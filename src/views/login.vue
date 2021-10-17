@@ -58,6 +58,7 @@ export default {
   methods: {
     checkUser(code) {
       if (code == "success") {
+        sessionStorage.setItem("authorization", code);
         notification["success"]({
           message: "Login Berhasil",
           description: "Mengarahkan anda ke halaman utama",
