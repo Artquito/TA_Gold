@@ -84,7 +84,8 @@
       :columns="columns"
       :scroll="{ x: 1800 }"
       bordered
-      style="padding-bottom: 50px"
+      class="change-color"
+      style="padding-bottom: 50px;"
     >
       <template #harga_beli_grosir="{ text }">
         {{ formatRupiah(text, "Rp.") }}
@@ -228,3 +229,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.table-header{
+  background-color: blue;
+}
+</style>
