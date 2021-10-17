@@ -22,8 +22,8 @@ jobs:
           port: 22
           script: |
             sudo systemctl stop jaya_abadi_frontend.service
+            git clone https://github.com/Cleonart/jap-frontend
             cd /root/jap-frontend
-            git pull origin master
             npm install
             sudo systemctl start jaya_abadi_frontend.service
             
