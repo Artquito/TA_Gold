@@ -123,7 +123,7 @@
                   <span v-if="apiParameters.key == ''"> Tambah</span>
                   <span v-else>Ubah</span>
                 </a-button>
-                <a-button key="back" @click="visible = false">Batal</a-button>
+                <a-button key="back" @click="closeForm()">Batal</a-button>
               </a-space>
             </a-form>
           </a-modal>
