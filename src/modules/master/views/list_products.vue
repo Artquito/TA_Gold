@@ -20,7 +20,7 @@
         />
       </a-col>
       <a-col flex="1">
-        <a-space :size="20">
+        <a-space :size="12">
           <a-button type="primary">
             <CloudDownloadOutlined />
             Import CSV
