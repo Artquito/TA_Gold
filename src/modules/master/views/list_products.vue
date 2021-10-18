@@ -230,18 +230,21 @@ export default {
           title: "Harga Beli Grosir",
           dataIndex: "harga_beli_grosir",
           key: "harga_beli_grosir",
+          width:160,
           slots: { customRender: "harga_beli_grosir" },
         },
         {
           title: "Harga Jual Grosir",
           dataIndex: "harga_jual_grosir",
           key: "harga_jual_grosir",
+          width:160,
           slots: { customRender: "harga_jual_grosir" },
         },
         {
           title: "Harga Jual Eceran",
           dataIndex: "harga_jual_eceran",
           key: "harga_jual_eceran",
+          width:160,
           slots: { customRender: "harga_jual_eceran" },
         },
         {
