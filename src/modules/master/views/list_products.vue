@@ -20,12 +20,12 @@
         />
       </a-col>
       <a-col flex="1">
-        <a-space :size="20">
+        <a-space :size="12">
           <a-button type="primary">
             <CloudDownloadOutlined />
             Import CSV
           </a-button>
-          <a-button type="primary" @click="visible = true">
+          <a-button type="primary" @click="{visible = true; isInputing= true;}">
             <PlusOutlined />
             Tambah Barang
           </a-button>
@@ -103,7 +103,7 @@
                   required
                 ></a-input-number>
               </a-form-item>
-              <a-form-item label="Stok Gudang">
+              <a-form-item v-if="isInputing" label="Stok Gudang">
                 <a-input-number
                   :step="1"
                   placeholder="Input stok gudang"
@@ -111,7 +111,7 @@
                   required
                 ></a-input-number>
               </a-form-item>
-              <a-form-item label="Stok Toko">
+              <a-form-item v-if="isInputing" label="Stok Toko">
                 <a-input-number
                   :step="1"
                   placeholder="Input stok toko"
@@ -136,6 +136,7 @@
       :columns="columns"
       :scroll="{ x: 1800 }"
       bordered
+      class="change-color"
       style="padding-bottom: 50px"
     >
       <template #action="{ record }">
@@ -229,18 +230,21 @@ export default {
           title: "Harga Beli Grosir",
           dataIndex: "harga_beli_grosir",
           key: "harga_beli_grosir",
+          width: 160,
           slots: { customRender: "harga_beli_grosir" },
         },
         {
           title: "Harga Jual Grosir",
           dataIndex: "harga_jual_grosir",
           key: "harga_jual_grosir",
+          width: 160,
           slots: { customRender: "harga_jual_grosir" },
         },
         {
           title: "Harga Jual Eceran",
           dataIndex: "harga_jual_eceran",
           key: "harga_jual_eceran",
+          width: 160,
           slots: { customRender: "harga_jual_eceran" },
         },
         {
@@ -255,6 +259,7 @@ export default {
         },
       ],
       visible: false,
+      isInputing :false,
     };
   },
   components: {
@@ -312,7 +317,7 @@ export default {
         })
         .then(function (response) {
           app.apiParameters = {
-            key:"",
+            key: "",
             nama: "",
             merek: "",
             varian: "",
@@ -338,15 +343,16 @@ export default {
     },
     handleEdit: function (record) {
       let data = JSON.parse(JSON.stringify(record));
-      
+
       console.log(data);
       this.visible = true;
       this.apiParameters = data;
       console.log(this.apiParameters);
     },
     closeForm: function () {
-      this.visible=false;
-      this.apiParameters ={
+      this.visible = false;
+      this.isInputing = false;
+      this.apiParameters = {
         key: "",
         nama: "",
         merek: "",
@@ -358,7 +364,7 @@ export default {
         harga_jual_eceran: "",
         stok_gudang: "",
         stok_toko: "",
-      }
+      };
     },
   },
   created() {
