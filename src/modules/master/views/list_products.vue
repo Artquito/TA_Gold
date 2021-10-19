@@ -21,22 +21,63 @@
       </a-col>
       <a-col flex="1">
         <a-space :size="12">
-          <a-button type="primary">
+          <a-button type="primary" @click="importIsVisible = true">
             <CloudDownloadOutlined />
             Import CSV
           </a-button>
-          <a-button type="primary" @click="{visible = true; isInputing= true;}">
+          <a-button
+            type="primary"
+            @click="
+              {
+                visible = true;
+                isInputing = true;
+              }
+            "
+          >
             <PlusOutlined />
             Tambah Barang
           </a-button>
           <a-modal
+            title="Upload File Excel"
+            v-model:visible="importIsVisible"
+            :footer="null"
+          >
+              <a-upload-dragger
+                v-model:fileList="fileList"
+                name="file"
+                :multiple="false"
+                action=""
+                @change="handleChange"
+              >
+                <p class="ant-upload-drag-icon">
+                  <inbox-outlined></inbox-outlined>
+                </p>
+                <p class="ant-upload-text">
+                  Upload File Excel di Sini
+                </p>
+                <p class="ant-upload-hint">
+                  Hanya mendukung unggahan tunggal
+                </p>
+              </a-upload-dragger>
+            <a-divider />
+            <a-row type="flex">
+              <a-col :flex="1">
+                <a-button type="primary">Unggah</a-button>
+              </a-col>
+              <a-col :flex="20">
+                <a-button type="dashed">Download File Contoh</a-button>
+              </a-col>
+              <a-col :flex="0">
+                <a-button type="regular">Batal</a-button>
+              </a-col>
+            </a-row>
+          </a-modal>
+          <a-modal
             v-model:visible="visible"
             title="Form Barang"
+            :footer="null"
             @cancel="closeForm()"
           >
-            <template #footer>
-              <p></p>
-            </template>
             <a-form layout="vertical" @submit="postData()">
               <a-form-item label="Nama Barang">
                 <a-input
@@ -116,6 +157,7 @@
                   :step="1"
                   placeholder="Input stok toko"
                   v-model:value="apiParameters.stok_toko"
+                  type="number"
                 ></a-input-number>
               </a-form-item>
               <a-space>
@@ -166,6 +208,7 @@ import {
   PlusOutlined,
   AppstoreOutlined,
   CloudDownloadOutlined,
+  InboxOutlined,
 } from "@ant-design/icons-vue";
 import { notification } from "ant-design-vue";
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
@@ -259,13 +302,15 @@ export default {
         },
       ],
       visible: false,
-      isInputing :false,
+      importIsVisible: false,
+      isInputing: false,
     };
   },
   components: {
     PlusOutlined,
     AppstoreOutlined,
     CloudDownloadOutlined,
+    InboxOutlined,
   },
   computed: {
     filteredData() {
