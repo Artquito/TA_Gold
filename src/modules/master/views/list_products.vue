@@ -68,7 +68,7 @@
                 <a-button type="dashed">Download File Contoh</a-button>
               </a-col>
               <a-col :flex="0">
-                <a-button type="regular">Batal</a-button>
+                <a-button type="regular" @click="{importIsVisible=false; fileList=[]}">Batal</a-button>
               </a-col>
             </a-row>
           </a-modal>
@@ -217,6 +217,7 @@ export default {
   data() {
     return {
       search_bar: "",
+      fileList:[],
       data: [],
       apiParameters: {
         key: "",
