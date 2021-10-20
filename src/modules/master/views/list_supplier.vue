@@ -25,18 +25,7 @@
             <CloudDownloadOutlined />
             Import CSV
           </a-button>
-          <a-button
-            type="primary"
-            @click="
-              {
-                visible = true;
-                isInputing = true;
-              }
-            "
-          >
-            <PlusOutlined />
-            Tambah Supplier
-          </a-button>
+          <formSupplier :cIsInputing="true" @getData="getData()"></formSupplier>
         </a-space>
       </a-col>
     </a-row>
@@ -48,16 +37,24 @@
       class="change-color"
       style="padding-bottom: 50px"
     >
+      <template #action="{ record }">
+        <div>
+          <span>
+            <formSupplier
+              :cIsInputing="false"
+              :cApiParameters="record"
+              @getData="getData()"
+            ></formSupplier>
+          </span>
+        </div>
+      </template>
     </a-table>
   </div>
 </template>
 
 <script>
-import {
-  PlusOutlined,
-  AppstoreOutlined,
-  CloudDownloadOutlined,
-} from "@ant-design/icons-vue";
+import formSupplier from "./forms/master_supplier.vue";
+import { AppstoreOutlined, CloudDownloadOutlined } from "@ant-design/icons-vue";
 // import { notification } from "ant-design-vue";
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
 const axios = require("axios");
@@ -65,8 +62,16 @@ export default {
   data() {
     return {
       search_bar: "",
+      visible: false,
+      isInputing: false,
       data: [],
       columns: [
+        {
+          title: "Actions",
+          dataIndex: "action",
+          key: "action",
+          slots: { customRender: "action" },
+        },
         {
           title: "ID",
           dataIndex: "key",
@@ -97,16 +102,16 @@ export default {
         },
         {
           title: "Nomor Telpon",
-          dataIndex: "no_telpon",
+          dataIndex: "no_telepon",
           width: 300,
         },
       ],
     };
   },
   components: {
-    PlusOutlined,
     AppstoreOutlined,
     CloudDownloadOutlined,
+    formSupplier,
   },
   computed: {
     filteredData() {
@@ -125,6 +130,8 @@ export default {
         .get(DEFAULT_ENDPOINT + "/api/v1/suppliers")
         .then(function (response) {
           app.data = response.data;
+          console.log("this is the mutation");
+          console.log(response);
         })
         .catch(function (error) {
           console.log(error);
