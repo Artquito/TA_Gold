@@ -1,10 +1,18 @@
 <template>
   <div>
-    <a-button type="primary" v-if="cIsInputing" @click="handleForm('open', true)">
+    <a-button
+      type="primary"
+      v-if="cIsInputing"
+      @click="handleForm('open', true)"
+    >
       <PlusOutlined />
       Tambah Supplier
     </a-button>
-    <a-button type="primary" v-if="!cIsInputing" @click="handleEdit(cApiParameters)">
+    <a-button
+      type="primary"
+      v-if="!cIsInputing"
+      @click="handleEdit(cApiParameters)"
+    >
       Perbaharui
     </a-button>
     <a-modal

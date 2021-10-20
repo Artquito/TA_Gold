@@ -29,6 +29,46 @@
         </a-space>
       </a-col>
     </a-row>
+    <a-modal
+      title="Upload File Excel"
+      v-model:visible="importIsVisible"
+      :footer="null"
+    >
+      <a-upload-dragger
+        v-model:fileList="fileList"
+        name="file"
+        :multiple="false"
+        action=""
+        @change="handleChange"
+      >
+        <p class="ant-upload-drag-icon">
+          <inbox-outlined></inbox-outlined>
+        </p>
+        <p class="ant-upload-text">Upload File Excel di Sini</p>
+        <p class="ant-upload-hint">Hanya mendukung unggahan tunggal</p>
+      </a-upload-dragger>
+      <a-divider />
+      <a-row type="flex">
+        <a-col :flex="1">
+          <a-button type="primary">Unggah</a-button>
+        </a-col>
+        <a-col :flex="20">
+          <a-button type="dashed">Download File Contoh</a-button>
+        </a-col>
+        <a-col :flex="0">
+          <a-button
+            type="regular"
+            @click="
+              {
+                importIsVisible = false;
+                fileList = [];
+              }
+            "
+            >Batal</a-button
+          >
+        </a-col>
+      </a-row>
+    </a-modal>
     <a-table
       :dataSource="filteredData"
       :columns="columns"
@@ -62,8 +102,8 @@ export default {
   data() {
     return {
       search_bar: "",
-      visible: false,
-      isInputing: false,
+      importIsVisible: false,
+      fileList: [],
       data: [],
       columns: [
         {
