@@ -6,7 +6,7 @@
           <AppstoreOutlined />
           Master Data
         </a-breadcrumb-item>
-        <a-breadcrumb-item><a href="">Master Supplier</a></a-breadcrumb-item>
+        <a-breadcrumb-item><router-link to="supplier">Master Supplier</router-link></a-breadcrumb-item>
       </a-breadcrumb>
     </div>
     <a-row justify="end" type="flex" style="margin: 30px 0px">
