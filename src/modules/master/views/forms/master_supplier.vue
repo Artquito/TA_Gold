@@ -10,10 +10,11 @@
     </a-button>
     <a-button
       type="primary"
+      block
       v-if="!cIsInputing"
       @click="handleEdit(cApiParameters)"
     >
-      Perbaharui
+      Details
     </a-button>
     <a-modal
       v-model:visible="mVisible"

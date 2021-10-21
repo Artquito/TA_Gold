@@ -6,7 +6,7 @@
           <AppstoreOutlined />
           Master Data
         </a-breadcrumb-item>
-        <a-breadcrumb-item><a href="">Master Barang</a></a-breadcrumb-item>
+        <a-breadcrumb-item><a href="">Master Supplier</a></a-breadcrumb-item>
       </a-breadcrumb>
     </div>
     <a-row justify="end" type="flex" style="margin: 30px 0px">
@@ -94,7 +94,11 @@
 
 <script>
 import formSupplier from "./forms/master_supplier.vue";
-import { AppstoreOutlined, CloudDownloadOutlined } from "@ant-design/icons-vue";
+import {
+  AppstoreOutlined,
+  CloudDownloadOutlined,
+  InboxOutlined,
+} from "@ant-design/icons-vue";
 // import { notification } from "ant-design-vue";
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
 const axios = require("axios");
@@ -152,6 +156,7 @@ export default {
     AppstoreOutlined,
     CloudDownloadOutlined,
     formSupplier,
+    InboxOutlined,
   },
   computed: {
     filteredData() {
