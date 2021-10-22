@@ -83,7 +83,7 @@
       class="change-color"
       style="padding-bottom: 50px"
     >
-      <template #action>
+      <template #action="{ record }">
         <div>
           <span>
             <form-pelanggan
