@@ -56,7 +56,6 @@
 
 <script>
 import { AppstoreOutlined } from "@ant-design/icons-vue";
-// import { ref } from 'vue';
 export default {
   watch: {
     current: function (val) {
