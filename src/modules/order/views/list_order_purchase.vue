@@ -87,20 +87,18 @@
       </a-col>
       <a-col flex="1">
         <a-space :size="12">
-          <a-button type="primary" @click="importIsVisible = true">
+          <a-button type="primary">
             <CloudDownloadOutlined />
             Import CSV
           </a-button>
-          <a-button type="primary" @click="importIsVisible = true">
-            <CloudDownloadOutlined />
-            Import CSV
-          </a-button>
+          <a-button type="primary"> Buat Pembelian Baru </a-button>
         </a-space>
       </a-col>
     </a-row>
 
     <a-table
       :columns="columns"
+      :dataSource="order_data.data"
       :scroll="{ x: 1300 }"
       bordered
       class="change-color"
@@ -117,15 +115,22 @@
           </span>
         </div>
       </template>
+      <template #status="{ record }">
+        <a-badge status="success" :text="record.status" />
+      </template>
+      <template #biaya="{ record }">
+        {{ formatRupiah(record.biaya, "Rp. ") }}
+      </template>
     </a-table>
   </div>
 </template>
 
 <script>
-import { AppstoreOutlined } from "@ant-design/icons-vue";
+import { AppstoreOutlined, CloudDownloadOutlined } from "@ant-design/icons-vue";
 export default {
   components: {
     AppstoreOutlined,
+    CloudDownloadOutlined,
   },
   data() {
     return {
@@ -144,6 +149,15 @@ export default {
             jumlah_pembayaran_order: 21000,
           },
         },
+        data: [
+          {
+            key: "OR/PEMB/221101",
+            status: "selesai",
+            tanggal_jatuh_tempo: "20/2/2021",
+            nama: "Toko A",
+            biaya: 1010000,
+          },
+        ],
       },
 
       columns: [
@@ -151,19 +165,40 @@ export default {
           title: "Actions",
           dataIndex: "action",
           key: "action",
+          width: 100,
           slots: { customRender: "action" },
         },
         {
           title: "ID",
           dataIndex: "key",
           Key: "key",
-          width: 127,
+          width: 150,
         },
         {
-          title: "Nama Supplier/Pemasok",
+          title: "Status",
+          dataIndex: "status",
+          Key: "status",
+          width: 200,
+          slots: { customRender: "status" },
+        },
+        {
+          title: "Tanggal Jatuh Tempo",
+          dataIndex: "tanggal_jatuh_tempo",
+          Key: "tanggal_jatuh_tempo",
+          width: 200,
+        },
+        {
+          title: "Nama Supplier/Pemasok/Toko",
           dataIndex: "nama",
           Key: "nama",
           width: 300,
+        },
+        {
+          title: "Biaya",
+          dataIndex: "biaya",
+          Key: "biaya",
+          width: 150,
+          slots: { customRender: "biaya" },
         },
       ],
     };

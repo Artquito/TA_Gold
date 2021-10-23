@@ -12,7 +12,15 @@ const routes = {
                 {
                     path: "",
                     component: ListOrderPurchase,
-                }
+                },
+                {
+                    path: "baru",
+                    component: ListOrderPurchase,
+                },
+                {
+                    path: ":id",
+                    component: ListOrderPurchase,
+                },
             ],
         },
     ],
