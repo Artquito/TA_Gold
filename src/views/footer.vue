@@ -15,6 +15,7 @@
   position: fixed;
   width: 100%;
   bottom: 0;
+  z-index: 9999;
 }
 .footer-content {
   color: #dfe4ea;

@@ -29,7 +29,7 @@
       </a-sub-menu>
       <a-sub-menu key="/order">
         <template #icon>
-          <AppstoreOutlined />
+          <CarryOutOutlined />
         </template>
         <template #title>Order Pembelian</template>
         <a-menu-item key="/order/pembelian">Daftar Order Pembelian</a-menu-item>
@@ -39,7 +39,7 @@
       </a-sub-menu>
       <a-sub-menu key="order_form_pos">
         <template #icon>
-          <AppstoreOutlined />
+          <ShoppingCartOutlined />
         </template>
         <template #title>Order Penjualan</template>
         <a-menu-item key="order_form_pos">Point Of Sales</a-menu-item>
@@ -55,7 +55,11 @@
 </template>
 
 <script>
-import { AppstoreOutlined } from "@ant-design/icons-vue";
+import {
+  AppstoreOutlined,
+  CarryOutOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons-vue";
 export default {
   watch: {
     current: function (val) {
@@ -79,6 +83,8 @@ export default {
   },
   components: {
     AppstoreOutlined,
+    CarryOutOutlined,
+    ShoppingCartOutlined,
   },
   created() {
     var state = sessionStorage.getItem("currentSession");
