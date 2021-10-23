@@ -88,7 +88,10 @@ export default {
   },
   created() {
     var state = sessionStorage.getItem("currentSession");
-    this.current = [state];
+    var isLoggedIn = sessionStorage.getItem("authorization");
+    if (isLoggedIn) {
+      this.current = [state];
+    }
   },
 };
 </script>
