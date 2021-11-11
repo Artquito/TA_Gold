@@ -33,8 +33,6 @@ export default {
           description:
             "Silahkan login kembali",
         });
-      } else {
-        console.log("didn't work");
       }
     },
   },
