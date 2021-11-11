@@ -75,16 +75,12 @@ export default {
     userAuth() {
       var app = this;
       axios
-        .post(DEFAULT_ENDPOINT + "/api/v1/user/auth", {
-          params: {
-            data: {
+        .post(DEFAULT_ENDPOINT + "/login.php", {
               username: app.username,
               password: app.password,
-            },
-          },
         })
         .then(function (response) {
-          let code = response.data.result.code;
+          let code = response.data.code;
           app.checkUser(code);
           console.log(response);
         })

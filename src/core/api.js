@@ -1,1 +1,1 @@
-export var DEFAULT_ENDPOINT = "http://jayaabadipratama.com:8014";
+export var DEFAULT_ENDPOINT = "http://localhost/GoldAPI";

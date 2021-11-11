@@ -8,7 +8,7 @@
       "
     >
       <a-typography-title :level="3" style="margin: 0">
-        Jaya Abadi
+        Boyer Moore Gold App
       </a-typography-title>
     </a-layout-header>
 
