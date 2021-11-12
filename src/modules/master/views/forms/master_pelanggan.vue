@@ -6,7 +6,7 @@
       @click="handleForm('open', true)"
     >
       <PlusOutlined />
-      Tambah Supplier
+      Add Item
     </a-button>
     <a-button
       type="primary"
@@ -23,19 +23,19 @@
       @cancel="handleForm('close')"
     >
       <a-form layout="vertical" @submit="postData()">
-        <a-form-item label="Nama Supplier">
+        <a-form-item label="Item UID">
           <a-input
-            placeholder="Input nama supplier"
-            v-model:value="apiParameters.nama"
-            name="name"
+            placeholder="No UID scanned"
+            v-model:value="apiParameters.item_rfid_uid"
+            name="item_rfid_uid"
             required
           >
           </a-input>
         </a-form-item>
-        <a-form-item label="Negara">
+        <a-form-item label="Item Name">
           <a-input
-            placeholder="Input negara supplier"
-            v-model:value="apiParameters.negara"
+            placeholder="Input item name"
+            v-model:value="apiParameters.item_name"
             required
           >
           </a-input>
@@ -94,13 +94,16 @@ export default {
     return {
       mVisible: false,
       apiParameters: {
-        key: "",
-        nama: "",
-        negara: "",
-        provinsi: "",
-        kota: "",
-        alamat: "",
-        no_telepon: "",
+        id: "",
+        item_rfid_uid: "",
+        item_name: "",
+        item_type: "",
+        item_price: "",
+        item_grade: "",
+        item_weight: "",
+        item_supplier: "",
+        item_arrival: "",
+        item_status: "",
       },
     };
   },
@@ -124,13 +127,16 @@ export default {
         })
         .then(function (response) {
           app.apiParameters = {
-            key: "",
-            nama: "",
-            negara: "",
-            provinsi: "",
-            kota: "",
-            alamat: "",
-            no_telepon: "",
+            id: "",
+            item_rfid_uid: "",
+            item_name: "",
+            item_type: "",
+            item_price: "",
+            item_grade: "",
+            item_weight: "",
+            item_supplier: "",
+            item_arrival: "",
+            item_status: "",
           };
           console.log("server post request");
           console.log(response);
@@ -153,13 +159,16 @@ export default {
       if (action == "close") {
         this.mVisible = false;
         this.apiParameters = {
-          key: "",
-          nama: "",
-          negara: "",
-          provinsi: "",
-          kota: "",
-          alamat: "",
-          no_telpon: "",
+          id: "",
+          item_rfid_uid: "",
+          item_name: "",
+          item_type: "",
+          item_price: "",
+          item_grade: "",
+          item_weight: "",
+          item_supplier: "",
+          item_arrival: "",
+          item_status: "",
         };
       } else {
         this.mVisible = true;
