@@ -11,6 +11,7 @@
         </a-breadcrumb-item>
       </a-breadcrumb>
     </div>
+    <!-- this is the buttons on top of the table -->
     <a-row justify="end" type="flex" style="margin: 30px 0px">
       <a-col flex="8">
         <a-input-search
@@ -35,6 +36,7 @@
         </a-space>
       </a-col>
     </a-row>
+    <!-- this is the import csv button -->
     <a-modal
       title="Upload File Excel"
       v-model:visible="importIsVisible"
@@ -75,10 +77,11 @@
         </a-col>
       </a-row>
     </a-modal>
+
     <a-table
       :dataSource="filteredData"
       :columns="columns"
-      :scroll="{ x: 1300 }"
+      :scroll="{ x: 1800 }"
       bordered
       class="change-color"
       style="padding-bottom: 50px"
@@ -93,6 +96,9 @@
             ></form-pelanggan>
           </span>
         </div>
+      </template>
+       <template #item_price="{ text }">
+        {{ formatRupiah(text, "Rp.") }}
       </template>
     </a-table>
   </div>
@@ -129,36 +135,49 @@ export default {
         },
         {
           title: "ID",
-          dataIndex: "key",
-          Key: "key",
+          dataIndex: "id",
+          Key: "id",
           width: 127,
         },
         {
-          title: "Nama",
-          dataIndex: "nama",
-          Key: "nama",
+          title: "Item RFID UID",
+          dataIndex: "item_rfid_uid",
+          Key: "item_rfid_uid",
+        },
+        {
+          title: "Name",
+          dataIndex: "item_name",
           width: 300,
         },
         {
-          title: "Negara",
-          dataIndex: "negara",
+          title: "Type",
+          dataIndex: "item_type",
         },
         {
-          title: "Provinsi",
-          dataIndex: "provinsi",
+          title: "Price",
+          dataIndex: "item_price",
+          slots: { customRender: "item_price" },
         },
         {
-          title: "Kota",
-          dataIndex: "kota",
+          title: "Grade",
+          dataIndex: "item_grade",
         },
         {
-          title: "Alamat",
-          dataIndex: "alamat",
+          title: "Weight",
+          dataIndex: "item_weight",
         },
         {
-          title: "Nomor Telpon",
-          dataIndex: "no_telepon",
-          width: 300,
+          title: "Supplier",
+          dataIndex: "item_supplier",
+        },
+        {
+          title: "`Date of Arrival`",
+          dataIndex: "item_arrival",
+          width: 200,
+        },
+        {
+          title: "Status",
+          dataIndex: "item_status",
         },
       ],
     };
@@ -166,18 +185,36 @@ export default {
   computed: {
     filteredData() {
       return this.data.filter((tableData) => {
-        return tableData.nama
+        return tableData.item_name
           .toLowerCase()
           .includes(this.search_bar.toLowerCase());
       });
     },
   },
   methods: {
+    formatRupiah: function (angka, prefix) {
+      angka = angka.toString();
+      var number_string = angka.replace(/[^,\d]/g, "").toString();
+      var split = number_string.split(",");
+      var sisa = split[0].length % 3;
+      var rupiah = split[0].substr(0, sisa);
+      var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+      var separator;
+
+      // tambahkan titik jika yang di input sudah menjadi angka ribuan
+      if (ribuan) {
+        separator = sisa ? "." : "";
+        rupiah += separator + ribuan.join(".");
+      }
+
+      rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+      return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+    },
     getData: function () {
       var app = this;
 
       axios
-        .get(DEFAULT_ENDPOINT + "/api/v1/customers")
+        .get(DEFAULT_ENDPOINT + "/item.php")
         .then(function (response) {
           app.data = response.data;
           console.log("this is the mutation");

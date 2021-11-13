@@ -6,7 +6,7 @@
       @click="handleForm('open', true)"
     >
       <PlusOutlined />
-      Tambah Supplier
+      Add Item
     </a-button>
     <a-button
       type="primary"
@@ -23,61 +23,69 @@
       @cancel="handleForm('close')"
     >
       <a-form layout="vertical" @submit="postData()">
-        <a-form-item label="Nama Supplier">
+        <a-form-item label="Item UID">
           <a-input
-            placeholder="Input nama supplier"
-            v-model:value="apiParameters.nama"
-            name="name"
+            placeholder="No UID scanned"
+            v-model:value="apiParameters.item_rfid_uid"
+            name="item_rfid_uid"
             required
           >
           </a-input>
         </a-form-item>
-        <a-form-item label="Negara">
+        <a-form-item label="Item Name">
           <a-input
-            placeholder="Input negara supplier"
-            v-model:value="apiParameters.negara"
+            placeholder="Input name of item"
+            v-model:value="apiParameters.item_name"
             required
           >
           </a-input>
         </a-form-item>
-        <a-form-item label="Provinsi">
+        <a-form-item label="Item Type">
           <a-input
-            placeholder="Input provinsi supplier"
-            v-model:value="apiParameters.provinsi"
+            placeholder="Input the type of item"
+            v-model:value="apiParameters.item_type"
             required
           >
           </a-input>
         </a-form-item>
-        <a-form-item label="Kota">
+        <a-form-item label="Item Price">
           <a-input
-            placeholder="Input kota supplier"
-            v-model:value="apiParameters.kota"
+            placeholder="Input the price of item"
+            v-model:value="apiParameters.item_price"
             required
           >
           </a-input>
         </a-form-item>
-        <a-form-item label="Alamat">
+        <a-form-item label="Item Grade">
           <a-input
-            placeholder="Input alamat supplier"
-            v-model:value="apiParameters.alamat"
+            placeholder="Input the gold grade of item in karats"
+            v-model:value="apiParameters.item_grade"
             required
           >
           </a-input>
         </a-form-item>
-        <a-form-item label="Nomor Telpon">
+        <a-form-item label="Item Weight">
           <a-input
-            placeholder="Input nomor telpon supplier"
-            v-model:value="apiParameters.no_telepon"
+            placeholder="Input the weight of item in grams"
+            v-model:value="apiParameters.item_weight"
+            required
+          >
+          </a-input>
+        </a-form-item>
+        <a-form-item label="Item Supplier">
+          <a-input
+            placeholder="Input the item supplier name"
+            v-model:value="apiParameters.item_supplier"
             required
           >
           </a-input>
         </a-form-item>
         <a-space>
           <a-button key="submit" type="primary" html-type="submit">
-            <span v-if="apiParameters.key == ''"> Tambah</span>
-            <span v-else>Ubah</span>
+            <span v-if="apiParameters.id == ''">Add</span>
+            <span v-else>Change</span>
           </a-button>
-          <a-button key="back" @click="handleForm('close')">Batal</a-button>
+          <a-button key="back" @click="handleForm('close')">Cancel</a-button>
         </a-space>
       </a-form>
     </a-modal>
@@ -86,7 +94,7 @@
 
 <script>
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
-import { notification } from "ant-design-vue";
+// import { notification } from "ant-design-vue";
 import { PlusOutlined } from "@ant-design/icons-vue";
 const axios = require("axios");
 export default {
@@ -94,52 +102,65 @@ export default {
     return {
       mVisible: false,
       apiParameters: {
-        key: "",
-        nama: "",
-        negara: "",
-        provinsi: "",
-        kota: "",
-        alamat: "",
-        no_telepon: "",
+        id: "",
+        item_rfid_uid: "",
+        item_name: "",
+        item_type: "",
+        item_price: "",
+        item_grade: "",
+        item_weight: "",
+        item_supplier: "",
+        item_arrival: "",
+        item_status: "",
       },
     };
   },
   props: ["cApiParameters", "cIsInputing"],
   methods: {
-    handleEdit: function (record) {
+    //handeleEdit is there to handle an edit event when a user clicks the details button
+    handleEdit: function (record) { // records taken from the props cApiParameters
       this.handleForm("open", false);
       if (record !== "undefined") {
-        let data = JSON.parse(JSON.stringify(record));
-        this.mVisible = true;
-        this.apiParameters = data;
+        let data = JSON.parse(JSON.stringify(record)); // this turns the recorded data index into json format
+        this.mVisible = true; // this makes the modal appear
+        this.apiParameters = data; //assigns it to the local api parameters
       }
     },
     postData: function () {
       var app = this;
       axios
-        .post(DEFAULT_ENDPOINT + "/api/v1/customer", {
-          params: {
-            data: app.apiParameters,
-          },
+        .post(DEFAULT_ENDPOINT + "/insert_item.php", {
+              item_rfid_uid: app.apiParameters.item_rfid_uid,
+              item_name: app.apiParameters.item_name,
+              item_type: app.apiParameters.item_type,
+              item_price: app.apiParameters.item_price,
+              item_grade: app.apiParameters.item_grade,
+              item_weight: app.apiParameters.item_weight,
+              item_supplier: app.apiParameters.item_supplier,
+              item_arrival: app.apiParameters.item_arrival,
+              item_status: app.apiParameters.item_status,
         })
         .then(function (response) {
           app.apiParameters = {
-            key: "",
-            nama: "",
-            negara: "",
-            provinsi: "",
-            kota: "",
-            alamat: "",
-            no_telepon: "",
+            id: "",
+            item_rfid_uid: "",
+            item_name: "",
+            item_type: "",
+            item_price: "",
+            item_grade: "",
+            item_weight: "",
+            item_supplier: "",
+            item_arrival: "",
+            item_status: "",
           };
           console.log("server post request");
           console.log(response);
           app.getData();
           app.mVisible = false;
-          notification[response.data.result.code]({
-            message: response.data.result.message,
-            description: response.data.result.description,
-          });
+          // notification[response.data.result.code]({
+          //   message: response.data.result.message,
+          //   description: response.data.result.description,
+          // });
         })
         .catch(function (error) {
           console.log(error);
@@ -153,13 +174,16 @@ export default {
       if (action == "close") {
         this.mVisible = false;
         this.apiParameters = {
-          key: "",
-          nama: "",
-          negara: "",
-          provinsi: "",
-          kota: "",
-          alamat: "",
-          no_telpon: "",
+          id: "",
+          item_rfid_uid: "",
+          item_name: "",
+          item_type: "",
+          item_price: "",
+          item_grade: "",
+          item_weight: "",
+          item_supplier: "",
+          item_arrival: "",
+          item_status: "",
         };
       } else {
         this.mVisible = true;
