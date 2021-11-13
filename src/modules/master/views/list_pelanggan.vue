@@ -81,7 +81,7 @@
     <a-table
       :dataSource="filteredData"
       :columns="columns"
-      :scroll="{ x: 1300 }"
+      :scroll="{ x: 1800 }"
       bordered
       class="change-color"
       style="padding-bottom: 50px"
@@ -96,6 +96,9 @@
             ></form-pelanggan>
           </span>
         </div>
+      </template>
+       <template #item_price="{ text }">
+        {{ formatRupiah(text, "Rp.") }}
       </template>
     </a-table>
   </div>
@@ -153,6 +156,7 @@ export default {
         {
           title: "Price",
           dataIndex: "item_price",
+          slots: { customRender: "item_price" },
         },
         {
           title: "Grade",
@@ -169,7 +173,7 @@ export default {
         {
           title: "`Date of Arrival`",
           dataIndex: "item_arrival",
-          width: 300,
+          width: 200,
         },
         {
           title: "Status",
@@ -188,6 +192,24 @@ export default {
     },
   },
   methods: {
+    formatRupiah: function (angka, prefix) {
+      angka = angka.toString();
+      var number_string = angka.replace(/[^,\d]/g, "").toString();
+      var split = number_string.split(",");
+      var sisa = split[0].length % 3;
+      var rupiah = split[0].substr(0, sisa);
+      var ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+      var separator;
+
+      // tambahkan titik jika yang di input sudah menjadi angka ribuan
+      if (ribuan) {
+        separator = sisa ? "." : "";
+        rupiah += separator + ribuan.join(".");
+      }
+
+      rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
+      return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+    },
     getData: function () {
       var app = this;
 
