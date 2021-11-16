@@ -48,6 +48,7 @@
             placeholder="No UID scanned"
             v-model:value="apiParameters.item_rfid_uid"
             name="item_rfid_uid"
+            :disabled="true"
             required
           >
           </a-input>
@@ -135,7 +136,7 @@ export default {
         item_arrival: "",
         item_status: "",
       },
-      client: new Paho.Client("localhost", 9001, "webclient"),
+      client: "",
       topic: "test",
       isConnected: false,
     };
@@ -198,7 +199,7 @@ export default {
     handleForm: function (action, isInputing) {
       // this.$emit("formAction");
       if (action == "close") {
-        // this.client.disconnect();
+        this.client.disconnect();
         this.mVisible = false;
         this.apiParameters = {
           id: "",
@@ -213,7 +214,7 @@ export default {
           item_status: "",
         };
       } else {
-        if(!this.isConnected){
+        if (!this.isConnected) {
           this.connect();
         }
         this.mVisible = true;
@@ -222,8 +223,9 @@ export default {
         this.isInputing = isInputing;
       }
     },
-    onConnectedLost: function (responseObject) {
+    onConnectionLost: function (responseObject) {
       this.isConnected = false;
+      console.log("disconnected");
       console.log("onConnectionLost:" + responseObject.errorMessage);
     },
     onMessageArrived: function (message) {
@@ -245,19 +247,22 @@ export default {
       // this.client.send(message);
     },
     connect: function () {
+      // var app = this;
       this.client.connect({
         onSuccess: this.onConnect,
+        keepAliveInterval: 5,
       });
-      this.client.onConnectedLost = this.onConnectedLost;
+      this.client.onConnectionLost = this.onConnectionLost;
       this.client.onMessageArrived = this.onMessageArrived;
     },
   },
   created() {
-    // this.client.connect({
-    //   onSuccess: this.onConnect,
-    // });
-    // this.client.onConnectedLost = this.onConnectedLost;
-    // this.client.onMessageArrived = this.onMessageArrived;
+    let generatedCID = Math.floor(Math.random() * 10000);
+    this.client = new Paho.Client(
+      "localhost",
+      9001,
+      "webclient/item_master/" + generatedCID
+    );
   },
   components: {
     PlusOutlined,
