@@ -97,7 +97,7 @@
           </span>
         </div>
       </template>
-       <template #item_price="{ text }">
+      <template #item_price="{ text }">
         {{ formatRupiah(text, "Rp.") }}
       </template>
     </a-table>
