@@ -22,12 +22,33 @@
       :footer="null"
       @cancel="handleForm('close')"
     >
-      <a-form layout="vertical" @submit="postData()">
+      <!-- this is the scan card view -->
+      <div v-if="apiParameters.item_rfid_uid == ''">
+        <a-row type="flex" justify="center" align="middle">
+          <a-col>
+            <ScanOutlined style="font-size: 10em; color: #08c" />
+          </a-col>
+        </a-row>
+        <a-row type="flex" justify="center" align="middle">
+          <a-col>
+            <a-typography-title :level="3" style="margin-top: 40px"
+              >Please Scan Your Card to Continue</a-typography-title
+            >
+          </a-col>
+        </a-row>
+      </div>
+      <!-- this is the form view -->
+      <a-form
+        v-if="!apiParameters.item_rfid_uid == ''"
+        layout="vertical"
+        @submit="postData()"
+      >
         <a-form-item label="Item UID">
           <a-input
             placeholder="No UID scanned"
             v-model:value="apiParameters.item_rfid_uid"
             name="item_rfid_uid"
+            :disabled="true"
             required
           >
           </a-input>
@@ -95,7 +116,9 @@
 <script>
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
 // import { notification } from "ant-design-vue";
-import { PlusOutlined } from "@ant-design/icons-vue";
+import { PlusOutlined, ScanOutlined } from "@ant-design/icons-vue";
+import Paho from "paho-mqtt";
+// import { Alert } from "ant-design-vue";
 const axios = require("axios");
 export default {
   data() {
@@ -113,12 +136,16 @@ export default {
         item_arrival: "",
         item_status: "",
       },
+      client: "",
+      topic: "test",
+      isConnected: false,
     };
   },
   props: ["cApiParameters", "cIsInputing"],
   methods: {
     //handeleEdit is there to handle an edit event when a user clicks the details button
-    handleEdit: function (record) { // records taken from the props cApiParameters
+    handleEdit: function (record) {
+      // records taken from the props cApiParameters
       this.handleForm("open", false);
       if (record !== "undefined") {
         let data = JSON.parse(JSON.stringify(record)); // this turns the recorded data index into json format
@@ -130,15 +157,15 @@ export default {
       var app = this;
       axios
         .post(DEFAULT_ENDPOINT + "/insert_item.php", {
-              item_rfid_uid: app.apiParameters.item_rfid_uid,
-              item_name: app.apiParameters.item_name,
-              item_type: app.apiParameters.item_type,
-              item_price: app.apiParameters.item_price,
-              item_grade: app.apiParameters.item_grade,
-              item_weight: app.apiParameters.item_weight,
-              item_supplier: app.apiParameters.item_supplier,
-              item_arrival: app.apiParameters.item_arrival,
-              item_status: app.apiParameters.item_status,
+          item_rfid_uid: app.apiParameters.item_rfid_uid,
+          item_name: app.apiParameters.item_name,
+          item_type: app.apiParameters.item_type,
+          item_price: app.apiParameters.item_price,
+          item_grade: app.apiParameters.item_grade,
+          item_weight: app.apiParameters.item_weight,
+          item_supplier: app.apiParameters.item_supplier,
+          item_arrival: app.apiParameters.item_arrival,
+          item_status: app.apiParameters.item_status,
         })
         .then(function (response) {
           app.apiParameters = {
@@ -172,6 +199,7 @@ export default {
     handleForm: function (action, isInputing) {
       // this.$emit("formAction");
       if (action == "close") {
+        this.client.disconnect();
         this.mVisible = false;
         this.apiParameters = {
           id: "",
@@ -186,15 +214,59 @@ export default {
           item_status: "",
         };
       } else {
+        if (!this.isConnected) {
+          this.connect();
+        }
         this.mVisible = true;
       }
       if (isInputing !== "undefined") {
         this.isInputing = isInputing;
       }
     },
+    onConnectionLost: function (responseObject) {
+      this.isConnected = false;
+      console.log("disconnected");
+      console.log("onConnectionLost:" + responseObject.errorMessage);
+    },
+    onMessageArrived: function (message) {
+      if (this.apiParameters.item_rfid_uid == "") {
+        this.apiParameters.item_rfid_uid = message.payloadString;
+        this.mVisible = true;
+        console.log("onMessageArrived:" + message.payloadString);
+      } else {
+        console.log("Input Bussy");
+      }
+    },
+    onConnect: function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      console.log("onConnect");
+      this.isConnected = true;
+      this.client.subscribe(this.topic);
+      // var message = new Paho.Message("Hello");
+      // message.destinationName = this.topic;
+      // this.client.send(message);
+    },
+    connect: function () {
+      // var app = this;
+      this.client.connect({
+        onSuccess: this.onConnect,
+        keepAliveInterval: 5,
+      });
+      this.client.onConnectionLost = this.onConnectionLost;
+      this.client.onMessageArrived = this.onMessageArrived;
+    },
+  },
+  created() {
+    let generatedCID = Math.floor(Math.random() * 10000);
+    this.client = new Paho.Client(
+      "localhost",
+      9001,
+      "webclient/item_master/" + generatedCID
+    );
   },
   components: {
     PlusOutlined,
+    ScanOutlined,
   },
 };
 </script>
