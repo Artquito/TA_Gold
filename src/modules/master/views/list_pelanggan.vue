@@ -120,6 +120,7 @@ export default {
     InboxOutlined,
     "form-pelanggan": formPelanggan,
   },
+  props:['test'],
   data() {
     return {
       search_bar: "",
