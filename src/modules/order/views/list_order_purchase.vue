@@ -1,140 +1,116 @@
 <template>
-  <div class="container">
-    <!-- Breadcrumbs -->
-    <div class="breadcrumbs" style="margin: 30px 0px">
-      <a-breadcrumb>
-        <a-breadcrumb-item>
-          <AppstoreOutlined />
-          Order
-        </a-breadcrumb-item>
-        <a-breadcrumb-item>
-          <router-link to="order/pembelian">Pembelian</router-link>
-        </a-breadcrumb-item>
-      </a-breadcrumb>
-    </div>
+  <div class="intiation" v-if="!operating" style="margin-top: 30px">
+    <a-typography-title :level="3">
+      Start Item Attendance Check
+    </a-typography-title>
+    <a-typography-text>
+      To start your checking procedure pelase pick a tray you are inspecting
+      <br />
+      then click the start button.
+    </a-typography-text>
+    <br />
+    <a-space style="margin-top: 10px" direction="vertical">
+      <a-auto-complete
+        v-model:value="tray_selection_value"
+        :options="trays"
+        style="width: 200px"
+        placeholder="Pick your tray here"
+        :filter-option="filteredData"
+      />
+      <a-button @click="getTrayItems()" type="primary">Start</a-button>
+    </a-space>
+  </div>
 
-    <!-- 
-      Card of Data 
-    -->
-    <div>
-      <a-row :gutter="16">
-        <!-- Order Pembelian Selesai -->
-        <a-col class="gutter-row" :span="8">
-          <a-card
-            size="small"
-            :loading="!order_data.statistics.selesai"
-            title="Order Pembelian Selesai"
-          >
-            <span style="font-size: 25px">
-              {{
-                formatRupiah(
-                  order_data.statistics.selesai.jumlah_pembayaran_order,
-                  "Rp."
-                )
-              }}
-            </span>
-          </a-card>
+  <div class="scanning_state" v-if="operating">
+    <div class="container">
+      <!-- Breadcrumbs -->
+      <div class="breadcrumbs" style="margin: 30px 0px">
+        <a-breadcrumb>
+          <a-breadcrumb-item>
+            <AppstoreOutlined />
+            Order
+          </a-breadcrumb-item>
+          <a-breadcrumb-item>
+            <router-link to="order/pembelian">Pembelian</router-link>
+          </a-breadcrumb-item>
+        </a-breadcrumb>
+      </div>
+
+      <!-- Items left to scan  -->
+      <div>
+        <a-row :gutter="16">
+          <!-- Order Pembelian Selesai -->
+          <a-col class="gutter-row" :span="8">
+            <a-card size="small" title="Scanner">
+              <span style="font-size: 25px">
+                Items to Scan : {{ scan_count }}
+              </span>
+            </a-card>
+          </a-col>
+        </a-row>
+      </div>
+
+      <!-- Input and Button -->
+      <a-row justify="end" type="flex" style="margin: 30px 0px">
+        <a-col flex="8">
+          <a-input-search
+            justify="right"
+            placeholder="input search text"
+            style="width: 200px"
+            v-model:value="search_bar"
+            size="medium"
+          />
         </a-col>
 
-        <!-- Order Pembelian Menunggu -->
-        <a-col class="gutter-row" :span="8">
-          <a-card
-            size="small"
-            :loading="!order_data.statistics.menunggu"
-            title="Order Pembelian Menunggu"
-          >
-            <span style="font-size: 25px">
-              {{
-                formatRupiah(
-                  order_data.statistics.menunggu.jumlah_pembayaran_order,
-                  "Rp."
-                )
-              }}
-            </span>
-          </a-card>
-        </a-col>
-
-        <!-- Order Pembelian Jatuh Tempo -->
-        <a-col class="gutter-row" :span="8">
-          <a-card
-            size="small"
-            :loading="!order_data.statistics.jatuh_tempo"
-            title="Order Pembelian Jatuh Tempo"
-          >
-            <span style="font-size: 25px">
-              {{
-                formatRupiah(
-                  order_data.statistics.jatuh_tempo.jumlah_pembayaran_order,
-                  "Rp."
-                )
-              }}
-            </span>
-          </a-card>
-        </a-col>
+        <!-- this is a series of buttons -->
+        <!-- <a-col flex="1">
+          <a-space :size="12">
+            <a-button type="primary">
+              <CloudDownloadOutlined />
+              Import CSV
+            </a-button>
+            <a-button type="primary"> Buat Pembelian Baru </a-button>
+          </a-space>
+        </a-col> -->
       </a-row>
+
+      <a-table
+        :columns="columns"
+        :dataSource="operation_data.data"
+        :scroll="{ x: 1300 }"
+        bordered
+        class="change-color"
+        style="padding-bottom: 100px; margin-top: 10px; z-index: -9999"
+      >
+        <template #status="{ record }">
+          <a-badge status="success" :text="record.status" />
+        </template>
+        <template #item_price="{ text }">
+          {{ formatRupiah(text, "Rp.") }}
+        </template>
+      </a-table>
     </div>
-
-    <!-- Input and Button -->
-    <a-row justify="end" type="flex" style="margin: 30px 0px">
-      <a-col flex="8">
-        <a-input-search
-          justify="right"
-          placeholder="input search text"
-          style="width: 200px"
-          v-model:value="search_bar"
-          size="medium"
-        />
-      </a-col>
-      <a-col flex="1">
-        <a-space :size="12">
-          <a-button type="primary">
-            <CloudDownloadOutlined />
-            Import CSV
-          </a-button>
-          <a-button type="primary"> Buat Pembelian Baru </a-button>
-        </a-space>
-      </a-col>
-    </a-row>
-
-    <a-table
-      :columns="columns"
-      :dataSource="order_data.data"
-      :scroll="{ x: 1300 }"
-      bordered
-      class="change-color"
-      style="padding-bottom: 100px; margin-top: 10px; z-index: -9999"
-    >
-      <template #action="{ record }">
-        <div>
-          <span>
-            <form-pelanggan
-              :cIsInputing="false"
-              :cApiParameters="record"
-              @getData="getData()"
-            ></form-pelanggan>
-          </span>
-        </div>
-      </template>
-      <template #status="{ record }">
-        <a-badge status="success" :text="record.status" />
-      </template>
-      <template #biaya="{ record }">
-        {{ formatRupiah(record.biaya, "Rp. ") }}
-      </template>
-    </a-table>
   </div>
 </template>
 
 <script>
-import { AppstoreOutlined, CloudDownloadOutlined } from "@ant-design/icons-vue";
+import { AppstoreOutlined } from "@ant-design/icons-vue";
+import { DEFAULT_ENDPOINT } from "@/core/api.js";
+import { notification } from "ant-design-vue";
+const axios = require("axios");
 export default {
   components: {
     AppstoreOutlined,
-    CloudDownloadOutlined,
   },
   data() {
     return {
-      order_data: {
+      operating: false,
+      scan_count: 10,
+      tray_selection_value: "",
+
+      trays: [{ value: "K01" }, { value: "K02" }, { value: "K03" }],
+
+      operation_data: {
         statistics: {
           selesai: {
             jumlah_order: 10,
@@ -151,59 +127,100 @@ export default {
         },
         data: [
           {
-            key: "OR/PEMB/221101",
+            item_rfid_uid: "OR/PEMB/221101",
+            item_name: "test 1",
             status: "selesai",
-            tanggal_jatuh_tempo: "20/2/2021",
-            nama: "Toko A",
-            biaya: 1010000,
+            item_price: 100000,
+            item_type: "test",
           },
         ],
       },
 
       columns: [
         {
-          title: "Actions",
-          dataIndex: "action",
-          key: "action",
-          width: 100,
-          slots: { customRender: "action" },
+          title: "Item RFID UID",
+          dataIndex: "item_rfid_uid",
+          key: "item_rfid_uid",
+          width: 200,
         },
         {
-          title: "ID",
-          dataIndex: "key",
-          Key: "key",
-          width: 150,
+          title: "Name",
+          dataIndex: "item_name",
+          Key: "item_name",
+          width: 200,
         },
         {
           title: "Status",
           dataIndex: "status",
           Key: "status",
-          width: 200,
+          width: 150,
           slots: { customRender: "status" },
         },
         {
-          title: "Tanggal Jatuh Tempo",
-          dataIndex: "tanggal_jatuh_tempo",
-          Key: "tanggal_jatuh_tempo",
+          title: "Price",
+          dataIndex: "item_price",
+          Key: "item_price",
           width: 200,
+          slots: { customRender: "item_price" },
         },
         {
-          title: "Nama Supplier/Pemasok/Toko",
-          dataIndex: "nama",
-          Key: "nama",
-          width: 300,
-        },
-        {
-          title: "Biaya",
-          dataIndex: "biaya",
-          Key: "biaya",
+          title: "Type",
+          dataIndex: "item_type",
+          Key: "item_type",
           width: 150,
-          slots: { customRender: "biaya" },
         },
       ],
     };
   },
+  computed: {
+    filteredData() {
+      return this.trays.filter((tableData) => {
+        return tableData.value
+          .toLowerCase()
+          .includes(this.tray_selection_value.toLowerCase());
+      });
+    },
+  },
   methods: {
+    renameKey(obj, oldKey, newKey) {
+      obj[newKey] = obj[oldKey];
+      delete obj[oldKey];
+    },
+    getTray() {
+      var app = this;
+      axios
+        .get(DEFAULT_ENDPOINT + "/tray.php")
+        .then(function (response) {
+          // replaces the object poperty "id" with "value" instead
+          const updatedJson = response.data;
+          updatedJson.forEach((obj) => app.renameKey(obj, "id", "value"));
+
+          app.trays = updatedJson;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    getTrayItems() {
+      var app = this;
+      var getParameter = "?item_tray_id=" + this.tray_selection_value;
+      axios
+        .get(DEFAULT_ENDPOINT + "/items_in_tray.php" + getParameter)
+        .then(function (response) {
+          app.operation_data.data = response.data.tray_data;
+          console.log("this is the mutation");
+          console.log(response);
+          notification[response.data.code]({
+            message: response.data.message,
+          });
+          if (response.data.code == "success") {
+            app.operating = true;
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     formatRupiah: function (angka, prefix) {
       angka = angka.toString();
       var number_string = angka.replace(/[^,\d]/g, "").toString();
@@ -222,6 +239,9 @@ export default {
       rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
       return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
     },
+  },
+  created() {
+    this.getTray();
   },
 };
 </script>
