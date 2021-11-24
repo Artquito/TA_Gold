@@ -60,6 +60,9 @@
             v-model:value="search_bar"
             size="medium"
           />
+          <a-button type="primary" style="margin-left: 20px" @click="test()"
+            >test scan</a-button
+          >
         </a-col>
 
         <!-- this is a series of buttons -->
@@ -83,7 +86,7 @@
         style="padding-bottom: 100px; margin-top: 10px; z-index: -9999"
       >
         <template #status="{ record }">
-          <a-badge status="success" :text="record.status" />
+          <a-badge :status="checkStatus(record.status)" :text="record.status" />
         </template>
         <template #item_price="{ text }">
           {{ formatRupiah(text, "Rp.") }}
@@ -182,6 +185,30 @@ export default {
     },
   },
   methods: {
+    checkStatus(value){
+      if(value == "scanned"){
+        return "success"
+      }
+      else{
+        return "error"
+      }
+    },
+    test() {
+      var scanned_tag = "1051046063";
+      this.operation_data.data.forEach((obj) => {
+        if (obj.status === "not scanned" && obj.item_rfid_uid == scanned_tag) {
+          obj.status= "scanned";
+          this.scan_count--;
+          return;
+        }
+        else if(obj.status === "scanned" && obj.item_rfid_uid == scanned_tag){
+          console.log("this item has already been scanned");
+        }
+      });
+      if(this.scan_count <= 0){
+        this.operating = false;
+      }
+    },
     renameKey(obj, oldKey, newKey) {
       obj[newKey] = obj[oldKey];
       delete obj[oldKey];
@@ -208,8 +235,11 @@ export default {
         .get(DEFAULT_ENDPOINT + "/items_in_tray.php" + getParameter)
         .then(function (response) {
           app.operation_data.data = response.data.tray_data;
-          console.log("this is the mutation");
-          console.log(response);
+
+          app.operation_data.data.forEach((obj) => {
+            obj.status = "not scanned";
+          });
+          app.scan_count = app.operation_data.data.length;
           notification[response.data.code]({
             message: response.data.message,
           });
