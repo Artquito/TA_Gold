@@ -15,4 +15,4 @@ app.config.globalProperties.$globalClient = new Paho.Client(
     9001,
     "webclient/item_master/01" + generatedCID
 );
-// app.config.globalProperties.$isConnected = false;
+app.config.globalProperties.$isConnected = false;

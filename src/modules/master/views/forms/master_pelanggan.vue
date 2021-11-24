@@ -135,7 +135,6 @@ export default {
         item_arrival: "",
         item_status: "",
       },
-      client: "",
       topic: "test",
       isConnected: false,
     };
@@ -198,7 +197,7 @@ export default {
     handleForm: function (action, isInputing) {
       // this.$emit("formAction");
       if (action == "close") {
-        // this.client.disconnect();
+        this.$globalClient.disconnect();
         this.mVisible = false;
         this.apiParameters = {
           id: "",
@@ -213,7 +212,7 @@ export default {
           item_status: "",
         };
       } else {
-        if (!this.isConnected) {
+        if (!this.$isConnected) {
           this.connect();
         }
         this.mVisible = true;
@@ -223,7 +222,7 @@ export default {
       }
     },
     onConnectionLost: function (responseObject) {
-      this.isConnected = false;
+      this.$isConnected = false;
       console.log("disconnected");
       console.log("onConnectionLost:" + responseObject.errorMessage);
     },
@@ -246,7 +245,6 @@ export default {
       // this.client.send(message);
     },
     connect: function () {
-      // var app = this;
       this.$globalClient.connect({
         onSuccess: this.onConnect,
         keepAliveInterval: 5,
@@ -256,7 +254,6 @@ export default {
     },
   },
   created() {
-    this.client = this.$globalClient;
   },
   components: {
     PlusOutlined,
