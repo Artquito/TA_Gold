@@ -117,7 +117,6 @@
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
 // import { notification } from "ant-design-vue";
 import { PlusOutlined, ScanOutlined } from "@ant-design/icons-vue";
-import Paho from "paho-mqtt";
 // import { Alert } from "ant-design-vue";
 const axios = require("axios");
 export default {
@@ -199,7 +198,7 @@ export default {
     handleForm: function (action, isInputing) {
       // this.$emit("formAction");
       if (action == "close") {
-        this.client.disconnect();
+        // this.client.disconnect();
         this.mVisible = false;
         this.apiParameters = {
           id: "",
@@ -241,28 +240,23 @@ export default {
       // Once a connection has been made, make a subscription and send a message.
       console.log("onConnect");
       this.isConnected = true;
-      this.client.subscribe(this.topic);
+      this.$globalClient.subscribe(this.topic);
       // var message = new Paho.Message("Hello");
       // message.destinationName = this.topic;
       // this.client.send(message);
     },
     connect: function () {
       // var app = this;
-      this.client.connect({
+      this.$globalClient.connect({
         onSuccess: this.onConnect,
         keepAliveInterval: 5,
       });
-      this.client.onConnectionLost = this.onConnectionLost;
-      this.client.onMessageArrived = this.onMessageArrived;
+      this.$globalClient.onConnectionLost = this.onConnectionLost;
+      this.$globalClient.onMessageArrived = this.onMessageArrived;
     },
   },
   created() {
-    let generatedCID = Math.floor(Math.random() * 10000);
-    this.client = new Paho.Client(
-      "localhost",
-      9001,
-      "webclient/item_master/" + generatedCID
-    );
+    this.client = this.$globalClient;
   },
   components: {
     PlusOutlined,
