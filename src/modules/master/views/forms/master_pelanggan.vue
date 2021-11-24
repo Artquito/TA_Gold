@@ -117,7 +117,6 @@
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
 // import { notification } from "ant-design-vue";
 import { PlusOutlined, ScanOutlined } from "@ant-design/icons-vue";
-import Paho from "paho-mqtt";
 // import { Alert } from "ant-design-vue";
 const axios = require("axios");
 export default {
@@ -136,7 +135,6 @@ export default {
         item_arrival: "",
         item_status: "",
       },
-      client: "",
       topic: "test",
       isConnected: false,
     };
@@ -199,7 +197,7 @@ export default {
     handleForm: function (action, isInputing) {
       // this.$emit("formAction");
       if (action == "close") {
-        this.client.disconnect();
+        this.$globalClient.disconnect();
         this.mVisible = false;
         this.apiParameters = {
           id: "",
@@ -214,7 +212,7 @@ export default {
           item_status: "",
         };
       } else {
-        if (!this.isConnected) {
+        if (!this.$isConnected) {
           this.connect();
         }
         this.mVisible = true;
@@ -224,7 +222,7 @@ export default {
       }
     },
     onConnectionLost: function (responseObject) {
-      this.isConnected = false;
+      this.$isConnected = false;
       console.log("disconnected");
       console.log("onConnectionLost:" + responseObject.errorMessage);
     },
@@ -241,28 +239,21 @@ export default {
       // Once a connection has been made, make a subscription and send a message.
       console.log("onConnect");
       this.isConnected = true;
-      this.client.subscribe(this.topic);
+      this.$globalClient.subscribe(this.topic);
       // var message = new Paho.Message("Hello");
       // message.destinationName = this.topic;
       // this.client.send(message);
     },
     connect: function () {
-      // var app = this;
-      this.client.connect({
+      this.$globalClient.connect({
         onSuccess: this.onConnect,
         keepAliveInterval: 5,
       });
-      this.client.onConnectionLost = this.onConnectionLost;
-      this.client.onMessageArrived = this.onMessageArrived;
+      this.$globalClient.onConnectionLost = this.onConnectionLost;
+      this.$globalClient.onMessageArrived = this.onMessageArrived;
     },
   },
   created() {
-    let generatedCID = Math.floor(Math.random() * 10000);
-    this.client = new Paho.Client(
-      "localhost",
-      9001,
-      "webclient/item_master/" + generatedCID
-    );
   },
   components: {
     PlusOutlined,
