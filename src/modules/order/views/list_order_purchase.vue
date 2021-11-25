@@ -76,10 +76,9 @@
           </a-space>
         </a-col> -->
       </a-row>
-
       <a-table
         :columns="columns"
-        :dataSource="operation_data.data"
+        :dataSource="filteredScannedData"
         :scroll="{ x: 1300 }"
         bordered
         class="change-color"
@@ -107,38 +106,22 @@ export default {
   },
   data() {
     return {
+      search_bar:"",
       operating: false,
       scan_count: 10,
       tray_selection_value: "",
 
       trays: [{ value: "K01" }, { value: "K02" }, { value: "K03" }],
 
-      operation_data: {
-        statistics: {
-          selesai: {
-            jumlah_order: 10,
-            jumlah_pembayaran_order: 895000,
-          },
-          menunggu: {
-            jumlah_order: 10,
-            jumlah_pembayaran_order: 112000,
-          },
-          jatuh_tempo: {
-            jumlah_order: 10,
-            jumlah_pembayaran_order: 21000,
-          },
+      data: [
+        {
+          item_rfid_uid: "OR/PEMB/221101",
+          item_name: "test 1",
+          status: "selesai",
+          item_price: 100000,
+          item_type: "test",
         },
-        data: [
-          {
-            item_rfid_uid: "OR/PEMB/221101",
-            item_name: "test 1",
-            status: "selesai",
-            item_price: 100000,
-            item_type: "test",
-          },
-        ],
-      },
-
+      ],
       columns: [
         {
           title: "Item RFID UID",
@@ -183,36 +166,90 @@ export default {
           .includes(this.tray_selection_value.toLowerCase());
       });
     },
+    filteredScannedData() {
+      return this.data.filter((tableData) => {
+        return tableData.item_name
+          .toLowerCase()
+          .includes(this.search_bar.toLowerCase());
+      });
+    },
   },
   methods: {
-    checkStatus(value){
-      if(value == "scanned"){
-        return "success"
-      }
-      else{
-        return "error"
+    // gives the status state to the badge in table  
+    // because ant can only read "error" and "success"
+    checkStatus(value) {
+      if (value == "scanned") {
+        return "success";
+      } else {
+        return "error";
       }
     },
-    test() {
-      var scanned_tag = "1051046063";
-      this.operation_data.data.forEach((obj) => {
-        if (obj.status === "not scanned" && obj.item_rfid_uid == scanned_tag) {
-          obj.status= "scanned";
-          this.scan_count--;
-          return;
-        }
-        else if(obj.status === "scanned" && obj.item_rfid_uid == scanned_tag){
-          console.log("this item has already been scanned");
+
+    // sorts the table data everytime a new tag is scanned
+    sortData(obj) {
+      this.data = obj.sort(function (
+        comparison_first_element,
+        comparison_second_element
+      ) {
+        if (
+          comparison_first_element.status === "scanned" &&
+          comparison_second_element.status === "not scanned"
+        ) {
+          return 1;
+        } else if (
+          comparison_first_element.status === "not scanned" &&
+          comparison_second_element.status === "scanned"
+        ) {
+          return -1;
+        } else {
+          return 0;
         }
       });
-      if(this.scan_count <= 0){
+      console.log(this.data);
+    },
+
+    test() {
+      var scanned_tag = ["1051046063", "1201335777"];
+      var scanned_tag_i = 0;
+
+      // scans all tags, see if they are already scanned, if not then it changes the status to scanned
+      // then sort them so that the scanned elements moves to the bottom of the table
+      scanned_tag.forEach(() => {
+        this.data.forEach((obj) => {
+          if (
+            obj.status === "not scanned" &&
+            obj.item_rfid_uid == scanned_tag[scanned_tag_i]
+          ) {
+            obj.status = "scanned";
+            this.scan_count--;
+            scanned_tag_i++;
+
+            this.sortData(this.data);
+            return;
+          } else if (
+            obj.status === "scanned" &&
+            obj.item_rfid_uid == scanned_tag
+          ) {
+            console.log("this item has already been scanned");
+          }
+        });
+      });
+
+      //this is to post the data when all of the items is scanned
+      if (this.scan_count <= 0) {
+        notification["success"]({
+          message: "Tray Fully Scanned",
+        });
         this.operating = false;
       }
     },
+
+    //renames the "id" of the requested data to "value" so ant-autocomplete can read it 
     renameKey(obj, oldKey, newKey) {
       obj[newKey] = obj[oldKey];
       delete obj[oldKey];
     },
+
     getTray() {
       var app = this;
       axios
@@ -228,18 +265,19 @@ export default {
           console.log(error);
         });
     },
+    
     getTrayItems() {
       var app = this;
       var getParameter = "?item_tray_id=" + this.tray_selection_value;
       axios
         .get(DEFAULT_ENDPOINT + "/items_in_tray.php" + getParameter)
         .then(function (response) {
-          app.operation_data.data = response.data.tray_data;
+          app.data = response.data.tray_data;
 
-          app.operation_data.data.forEach((obj) => {
+          app.data.forEach((obj) => {
             obj.status = "not scanned";
           });
-          app.scan_count = app.operation_data.data.length;
+          app.scan_count = app.data.length;
           notification[response.data.code]({
             message: response.data.message,
           });
@@ -251,6 +289,7 @@ export default {
           console.log(error);
         });
     },
+
     formatRupiah: function (angka, prefix) {
       angka = angka.toString();
       var number_string = angka.replace(/[^,\d]/g, "").toString();
