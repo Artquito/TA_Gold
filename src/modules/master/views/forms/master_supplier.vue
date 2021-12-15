@@ -6,7 +6,7 @@
       @click="handleForm('open', true)"
     >
       <PlusOutlined />
-      Tambah Supplier
+      Add Supplier
     </a-button>
     <a-button
       type="primary"

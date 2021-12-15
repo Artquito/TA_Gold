@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-layout-footer align="center" class="footer">
-      <span class="footer-content">Copyright @2021 by Jaya Abadi Pratama</span>
+      <span class="footer-content">Artquito Lahama 17013077 @2021</span>
     </a-layout-footer>
   </div>
 </template>

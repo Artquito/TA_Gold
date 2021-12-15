@@ -6,22 +6,22 @@
           <AppstoreOutlined />
           Master Data
         </a-breadcrumb-item>
-        <a-breadcrumb-item><a href="">Master Barang</a></a-breadcrumb-item>
+        <a-breadcrumb-item><a href="">Master Tray</a></a-breadcrumb-item>
       </a-breadcrumb>
     </div>
     <a-row justify="end" type="flex" style="margin: 30px 0px">
       <a-col flex="8">
         <a-input-search
           justify="right"
-          placeholder="input search text"
+          placeholder="Search tray"
           style="width: 200px"
           v-model:value="search_bar"
           size="medium"
         />
       </a-col>
-      <a-col flex="1">
+      <a-col flex="0">
         <a-space :size="12">
-          <a-button type="primary" @click="importIsVisible = true">
+          <a-button v-if="false" type="primary" @click="importIsVisible = true">
             <CloudDownloadOutlined />
             Import CSV
           </a-button>
@@ -35,30 +35,26 @@
             "
           >
             <PlusOutlined />
-            Tambah Barang
+            Add Tray
           </a-button>
           <a-modal
             title="Upload File Excel"
             v-model:visible="importIsVisible"
             :footer="null"
           >
-              <a-upload-dragger
-                v-model:fileList="fileList"
-                name="file"
-                :multiple="false"
-                action=""
-                @change="handleChange"
-              >
-                <p class="ant-upload-drag-icon">
-                  <inbox-outlined></inbox-outlined>
-                </p>
-                <p class="ant-upload-text">
-                  Upload File Excel di Sini
-                </p>
-                <p class="ant-upload-hint">
-                  Hanya mendukung unggahan tunggal
-                </p>
-              </a-upload-dragger>
+            <a-upload-dragger
+              v-model:fileList="fileList"
+              name="file"
+              :multiple="false"
+              action=""
+              @change="handleChange"
+            >
+              <p class="ant-upload-drag-icon">
+                <inbox-outlined></inbox-outlined>
+              </p>
+              <p class="ant-upload-text">Upload File Excel di Sini</p>
+              <p class="ant-upload-hint">Hanya mendukung unggahan tunggal</p>
+            </a-upload-dragger>
             <a-divider />
             <a-row type="flex">
               <a-col :flex="1">
@@ -68,7 +64,16 @@
                 <a-button type="dashed">Download File Contoh</a-button>
               </a-col>
               <a-col :flex="0">
-                <a-button type="regular" @click="{importIsVisible=false; fileList=[]}">Batal</a-button>
+                <a-button
+                  type="regular"
+                  @click="
+                    {
+                      importIsVisible = false;
+                      fileList = [];
+                    }
+                  "
+                  >Batal</a-button
+                >
               </a-col>
             </a-row>
           </a-modal>
@@ -176,7 +181,6 @@
     <a-table
       :dataSource="filteredData"
       :columns="columns"
-      :scroll="{ x: 1800 }"
       bordered
       class="change-color"
       style="padding-bottom: 50px"
@@ -217,7 +221,7 @@ export default {
   data() {
     return {
       search_bar: "",
-      fileList:[],
+      fileList: [],
       data: [],
       apiParameters: {
         key: "",
@@ -237,69 +241,13 @@ export default {
           title: "Actions",
           dataIndex: "action",
           key: "action",
+          width: 146,
           slots: { customRender: "action" },
         },
         {
-          title: "ID",
+          title: "Tray Id",
           dataIndex: "key",
           key: "key",
-        },
-        {
-          title: "Nama Barang",
-          dataIndex: "nama",
-          key: "nama",
-          width: 300,
-        },
-        {
-          title: "Merek",
-          dataIndex: "merek",
-          key: "merek",
-        },
-        {
-          title: "Varian",
-          dataIndex: "varian",
-          key: "varian",
-        },
-        {
-          title: "Satuan Grosir",
-          dataIndex: "satuan_grosir",
-          key: "satuan_grosir",
-        },
-        {
-          title: "Satuan Eceran",
-          dataIndex: "satuan_eceran",
-          key: "satuan_eceran",
-        },
-        {
-          title: "Harga Beli Grosir",
-          dataIndex: "harga_beli_grosir",
-          key: "harga_beli_grosir",
-          width: 160,
-          slots: { customRender: "harga_beli_grosir" },
-        },
-        {
-          title: "Harga Jual Grosir",
-          dataIndex: "harga_jual_grosir",
-          key: "harga_jual_grosir",
-          width: 160,
-          slots: { customRender: "harga_jual_grosir" },
-        },
-        {
-          title: "Harga Jual Eceran",
-          dataIndex: "harga_jual_eceran",
-          key: "harga_jual_eceran",
-          width: 160,
-          slots: { customRender: "harga_jual_eceran" },
-        },
-        {
-          title: "Stok Gudang",
-          dataIndex: "stok_gudang",
-          key: "stok_gudang",
-        },
-        {
-          title: "Stok Toko",
-          dataIndex: "stok_toko",
-          key: "stok_toko",
         },
       ],
       visible: false,

@@ -28,10 +28,10 @@
         <a-breadcrumb>
           <a-breadcrumb-item>
             <AppstoreOutlined />
-            Order
+            Item Check
           </a-breadcrumb-item>
           <a-breadcrumb-item>
-            <router-link to="order/pembelian">Pembelian</router-link>
+            <router-link to="order/pembelian">Attendance Check</router-link>
           </a-breadcrumb-item>
         </a-breadcrumb>
       </div>
@@ -55,26 +55,26 @@
         <a-col flex="8">
           <a-input-search
             justify="right"
-            placeholder="input search text"
+            placeholder="Search item"
             style="width: 200px"
             v-model:value="search_bar"
             size="medium"
           />
-          <a-button type="primary" style="margin-left: 20px" @click="test()"
+          <!-- <a-button type="primary" style="margin-left: 20px" @click="test()"
             >test scan</a-button
-          >
+          > -->
         </a-col>
 
         <!-- this is a series of buttons -->
-        <!-- <a-col flex="1">
+        <a-col flex="0">
           <a-space :size="12">
-            <a-button type="primary">
+            <!-- <a-button type="primary">
               <CloudDownloadOutlined />
               Import CSV
-            </a-button>
-            <a-button type="primary"> Buat Pembelian Baru </a-button>
+            </a-button> -->
+            <a-button type="primary"> Finish Scan </a-button>
           </a-space>
-        </a-col> -->
+        </a-col>
       </a-row>
       <a-table
         :columns="columns"
