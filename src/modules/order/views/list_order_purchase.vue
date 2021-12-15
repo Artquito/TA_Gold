@@ -106,10 +106,12 @@ export default {
   },
   data() {
     return {
-      search_bar:"",
+      search_bar: "",
       operating: false,
       scan_count: 10,
       tray_selection_value: "",
+      topic: "test",
+      device_topic: "ESP8266Client/reader01/test",
 
       trays: [{ value: "K01" }, { value: "K02" }, { value: "K03" }],
 
@@ -175,7 +177,7 @@ export default {
     },
   },
   methods: {
-    // gives the status state to the badge in table  
+    // gives the status state to the badge in table
     // because ant can only read "error" and "success"
     checkStatus(value) {
       if (value == "scanned") {
@@ -244,7 +246,7 @@ export default {
       }
     },
 
-    //renames the "id" of the requested data to "value" so ant-autocomplete can read it 
+    //renames the "id" of the requested data to "value" so ant-autocomplete can read it
     renameKey(obj, oldKey, newKey) {
       obj[newKey] = obj[oldKey];
       delete obj[oldKey];
@@ -265,7 +267,7 @@ export default {
           console.log(error);
         });
     },
-    
+
     getTrayItems() {
       var app = this;
       var getParameter = "?item_tray_id=" + this.tray_selection_value;
@@ -308,8 +310,72 @@ export default {
       rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
       return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
     },
+
+    //the paho controls
+    onConnectionLost: function (responseObject) {
+      this.$isConnected = false;
+      console.log("disconnected");
+      console.log("onConnectionLost:" + responseObject.errorMessage);
+    },
+
+    onMessageArrived: function (message) {
+      var scanned_tag = [];
+      scanned_tag.push(message.payloadString);
+      var scanned_tag_i = 0;
+
+      // scans all tags, see if they are already scanned, if not then it changes the status to scanned
+      // then sort them so that the scanned elements moves to the bottom of the table
+      scanned_tag.forEach(() => {
+        this.data.forEach((obj) => {
+          if (
+            obj.status === "not scanned" &&
+            obj.item_rfid_uid == scanned_tag[scanned_tag_i]
+          ) {
+            obj.status = "scanned";
+            this.scan_count--;
+            scanned_tag_i++;
+
+            this.sortData(this.data);
+            return;
+          } else if (
+            obj.status === "scanned" &&
+            obj.item_rfid_uid == scanned_tag
+          ) {
+            console.log("this item has already been scanned");
+          }
+        });
+      });
+
+      //this is to post the data when all of the items is scanned
+      if (this.scan_count <= 0) {
+        notification["success"]({
+          message: "Tray Fully Scanned",
+        });
+        this.operating = false;
+      }
+    },
+    onConnect: function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      console.log("onConnect");
+      this.$isConnected = true;
+      this.$globalClient.subscribe(this.topic);
+      this.$globalClient.publish(this.device_topic, "1", 1, true);
+
+      // var message = new Paho.Message("Hello");
+      // message.destinationName = this.topic;
+      // this.client.send(message);
+    },
+    connect: function () {
+      this.$globalClient.connect({
+        onSuccess: this.onConnect,
+        keepAliveInterval: 5,
+      });
+      this.$globalClient.onConnectionLost = this.onConnectionLost;
+      this.$globalClient.onMessageArrived = this.onMessageArrived;
+    },
   },
   created() {
+    this.connect();
     this.getTray();
   },
 };

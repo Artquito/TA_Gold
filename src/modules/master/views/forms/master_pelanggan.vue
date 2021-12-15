@@ -238,7 +238,7 @@ export default {
     onConnect: function onConnect() {
       // Once a connection has been made, make a subscription and send a message.
       console.log("onConnect");
-      this.isConnected = true;
+      this.$isConnected = true;
       this.$globalClient.subscribe(this.topic);
       // var message = new Paho.Message("Hello");
       // message.destinationName = this.topic;
