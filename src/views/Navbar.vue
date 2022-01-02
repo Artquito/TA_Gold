@@ -23,32 +23,32 @@
           <AppstoreOutlined />
         </template>
         <template #title>Master Data</template>
-        <a-menu-item key="/master/barang">Master Barang</a-menu-item>
+        <a-menu-item key="/master/barang">Master Tray</a-menu-item>
         <a-menu-item key="/master/supplier">Master Supplier</a-menu-item>
-        <a-menu-item key="/master/pelanggan">Master Pelanggan</a-menu-item>
+        <a-menu-item key="/master/pelanggan">Master Item</a-menu-item>
       </a-sub-menu>
       <a-sub-menu key="/order">
         <template #icon>
           <CarryOutOutlined />
         </template>
-        <template #title>Order Pembelian</template>
-        <a-menu-item key="/order/pembelian">Daftar Order Pembelian</a-menu-item>
-        <a-menu-item key="/order/pembelian/baru"
+        <template #title>Item Check</template>
+        <a-menu-item key="/order/pembelian">Item Attendance Check</a-menu-item>
+        <!-- <a-menu-item key="/order/pembelian/baru"
           >Order Pembelian Baru</a-menu-item
-        >
+        > -->
       </a-sub-menu>
       <a-sub-menu key="order_form_pos">
         <template #icon>
           <ShoppingCartOutlined />
         </template>
-        <template #title>Order Penjualan</template>
-        <a-menu-item key="order_form_pos">Point Of Sales</a-menu-item>
-        <a-menu-item key="order_form_penjualan"
+        <template #title>Outbound</template>
+        <a-menu-item key="order_form_pos">Outbound Items</a-menu-item>
+        <!-- <a-menu-item key="order_form_penjualan"
           >Order Penjualan Baru</a-menu-item
         >
         <a-menu-item key="order_list_penjualan"
           >Daftar Order Penjualan</a-menu-item
-        >
+        > -->
       </a-sub-menu>
     </a-menu>
   </div>

@@ -28,10 +28,10 @@
         <a-breadcrumb>
           <a-breadcrumb-item>
             <AppstoreOutlined />
-            Order
+            Item Check
           </a-breadcrumb-item>
           <a-breadcrumb-item>
-            <router-link to="order/pembelian">Pembelian</router-link>
+            <router-link to="order/pembelian">Attendance Check</router-link>
           </a-breadcrumb-item>
         </a-breadcrumb>
       </div>
@@ -55,26 +55,38 @@
         <a-col flex="8">
           <a-input-search
             justify="right"
-            placeholder="input search text"
+            placeholder="Search item"
             style="width: 200px"
             v-model:value="search_bar"
             size="medium"
           />
-          <a-button type="primary" style="margin-left: 20px" @click="test()"
+          <!-- <a-button type="primary" style="margin-left: 20px" @click="test()"
             >test scan</a-button
-          >
+          > -->
         </a-col>
 
         <!-- this is a series of buttons -->
-        <!-- <a-col flex="1">
+        <a-col flex="0">
           <a-space :size="12">
-            <a-button type="primary">
+            <!-- <a-button type="primary">
               <CloudDownloadOutlined />
               Import CSV
-            </a-button>
-            <a-button type="primary"> Buat Pembelian Baru </a-button>
+            </a-button> -->
+            <!-- <a-button type="primary" @click="postReport(true)">
+              Finish Scan
+            </a-button> -->
+            <a-popconfirm
+              title="Are you sure you want to finish the scan?"
+              ok-text="Yes"
+              cancel-text="No"
+              @confirm="postReport(true)"
+            >
+              <a-button type="primary">
+              Finish Scan
+              </a-button>
+            </a-popconfirm>
           </a-space>
-        </a-col> -->
+        </a-col>
       </a-row>
       <a-table
         :columns="columns"
@@ -117,6 +129,7 @@ export default {
 
       data: [
         {
+          id: "1",
           item_rfid_uid: "OR/PEMB/221101",
           item_name: "test 1",
           status: "selesai",
@@ -211,39 +224,36 @@ export default {
     },
 
     test() {
-      var scanned_tag = ["1051046063", "1201335777"];
-      var scanned_tag_i = 0;
-
-      // scans all tags, see if they are already scanned, if not then it changes the status to scanned
-      // then sort them so that the scanned elements moves to the bottom of the table
-      scanned_tag.forEach(() => {
-        this.data.forEach((obj) => {
-          if (
-            obj.status === "not scanned" &&
-            obj.item_rfid_uid == scanned_tag[scanned_tag_i]
-          ) {
-            obj.status = "scanned";
-            this.scan_count--;
-            scanned_tag_i++;
-
-            this.sortData(this.data);
-            return;
-          } else if (
-            obj.status === "scanned" &&
-            obj.item_rfid_uid == scanned_tag
-          ) {
-            console.log("this item has already been scanned");
-          }
-        });
-      });
-
-      //this is to post the data when all of the items is scanned
-      if (this.scan_count <= 0) {
-        notification["success"]({
-          message: "Tray Fully Scanned",
-        });
-        this.operating = false;
-      }
+      // var scanned_tag = ["1051046063", "1201335777"];
+      // var scanned_tag_i = 0;
+      // // scans all tags, see if they are already scanned, if not then it changes the status to scanned
+      // // then sort them so that the scanned elements moves to the bottom of the table
+      // scanned_tag.forEach(() => {
+      //   this.data.forEach((obj) => {
+      //     if (
+      //       obj.status === "not scanned" &&
+      //       obj.item_rfid_uid == scanned_tag[scanned_tag_i]
+      //     ) {
+      //       obj.status = "scanned";
+      //       this.scan_count--;
+      //       scanned_tag_i++;
+      //       this.sortData(this.data);
+      //       return;
+      //     } else if (
+      //       obj.status === "scanned" &&
+      //       obj.item_rfid_uid == scanned_tag
+      //     ) {
+      //       console.log("this item has already been scanned");
+      //     }
+      //   });
+      // });
+      // //this is to post the data when all of the items is scanned
+      // if (this.scan_count <= 0) {
+      //   notification["success"]({
+      //     message: "Tray Fully Scanned",
+      //   });
+      //   this.operating = false;
+      // }
     },
 
     //renames the "id" of the requested data to "value" so ant-autocomplete can read it
@@ -311,6 +321,26 @@ export default {
       return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
     },
 
+    postReport(fullyscanned) {
+      var app = this;
+      axios
+        .post(DEFAULT_ENDPOINT + "/item_check_report.php", app.data)
+        .then(function (response) {
+          console.log("this is the test response:");
+          console.log(response);
+          if (fullyscanned) {
+            notification["success"]({
+              message: "Tray Scanned with Items missing",
+            });
+          }
+          app.operating = false;
+        })
+        .catch(function (err) {
+          app.operating = false;
+          console.log(err);
+        });
+    },
+
     //the paho controls
     onConnectionLost: function (responseObject) {
       this.$isConnected = false;
@@ -351,7 +381,7 @@ export default {
         notification["success"]({
           message: "Tray Fully Scanned",
         });
-        this.operating = false;
+        this.postReport(false);
       }
     },
     onConnect: function onConnect() {

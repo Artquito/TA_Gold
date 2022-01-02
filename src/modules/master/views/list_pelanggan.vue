@@ -7,7 +7,7 @@
           Master Data
         </a-breadcrumb-item>
         <a-breadcrumb-item>
-          <router-link to="pelanggan"> Master Pelanggan </router-link>
+          <router-link to="pelanggan"> Master Item </router-link>
         </a-breadcrumb-item>
       </a-breadcrumb>
     </div>
@@ -16,15 +16,15 @@
       <a-col flex="8">
         <a-input-search
           justify="right"
-          placeholder="input search text"
+          placeholder="Search item"
           style="width: 200px"
           v-model:value="search_bar"
           size="medium"
         />
       </a-col>
-      <a-col flex="1">
+      <a-col flex="0">
         <a-space :size="12">
-          <a-button type="primary" @click="importIsVisible = true">
+          <a-button v-if="false" type="primary" @click="importIsVisible = true">
             <CloudDownloadOutlined />
             Import CSV
           </a-button>
@@ -172,7 +172,7 @@ export default {
           dataIndex: "item_supplier",
         },
         {
-          title: "`Date of Arrival`",
+          title: "Date of Arrival",
           dataIndex: "item_arrival",
           width: 200,
         },

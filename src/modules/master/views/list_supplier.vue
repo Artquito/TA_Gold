@@ -13,15 +13,15 @@
       <a-col flex="8">
         <a-input-search
           justify="right"
-          placeholder="input search text"
+          placeholder="Search name"
           style="width: 200px"
           v-model:value="search_bar"
           size="medium"
         />
       </a-col>
-      <a-col flex="1">
+      <a-col flex="0">
         <a-space :size="12">
-          <a-button type="primary" @click="importIsVisible = true">
+          <a-button type="primary" v-if="false" @click="importIsVisible = true">
             <CloudDownloadOutlined />
             Import CSV
           </a-button>
@@ -114,6 +114,7 @@ export default {
           title: "Actions",
           dataIndex: "action",
           key: "action",
+          width:146,
           slots: { customRender: "action" },
         },
         {
@@ -123,31 +124,18 @@ export default {
           width: 127,
         },
         {
-          title: "Nama",
+          title: "Name",
           dataIndex: "nama",
           Key: "nama",
-          width: 300,
+          width: 400,
         },
         {
-          title: "Negara",
+          title: "city",
           dataIndex: "negara",
         },
         {
-          title: "Provinsi",
+          title: "contact",
           dataIndex: "provinsi",
-        },
-        {
-          title: "Kota",
-          dataIndex: "kota",
-        },
-        {
-          title: "Alamat",
-          dataIndex: "alamat",
-        },
-        {
-          title: "Nomor Telpon",
-          dataIndex: "no_telepon",
-          width: 300,
         },
       ],
     };
