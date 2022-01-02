@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Index from "@/views/index";
 import Master from "@/modules/master";
 import Order from "@/modules/order";
+import Dashboard from "@/modules/dashboard";
 import Login from "@/views/login.vue";
 
 const routes = [
@@ -9,7 +10,7 @@ const routes = [
     path: "/",
     name: "Index",
     component: Index,
-    children: [Master.route, Order.route]
+    children: [Dashboard.route, Master.route, Order.route]
   },
   {
     path: "/login",
