@@ -63,7 +63,7 @@ export default {
           message: "Login Berhasil",
           description: "Mengarahkan anda ke halaman utama",
         });
-        this.$router.replace("/");
+        this.$router.replace("/dashboard");
       } else {
         notification["error"]({
           message: "Login Gagal",
