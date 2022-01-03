@@ -17,7 +17,7 @@
       mode="horizontal"
       style="padding: 0px 50px; margin-bottom: 0px"
     >
-      <a-menu-item key="/">Dashboard</a-menu-item>
+      <a-menu-item key="/dashboard">Dashboard</a-menu-item>
       <a-sub-menu key="/master">
         <template #icon>
           <AppstoreOutlined />
