@@ -1,4 +1,4 @@
-# TA_GOlD
+# TA_GOLD
 
 ## Project setup
 ```
