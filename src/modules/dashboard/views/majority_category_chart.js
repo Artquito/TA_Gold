@@ -1,13 +1,13 @@
 export const majority_chart_config = {
     type: "line",
     data: {
-        labels: ["2022-01-03", "2022-01-04", "2022-01-05"],
+        labels: ['date 1', 'date 2', 'date 3'],
         datasets: [
             {
                 label: "Total Sales",
                 backgroundColor: "rgb(255, 99, 132)",
                 borderColor: "rgb(255, 99, 132)",
-                data: [2, 1, 4],
+                data: [2 , 1, 3],
             },
         ],
     },

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h1 style="margin-top: 24px">{{ date_range.start_date }} - {{ date_range.end_date }}</h1>
+    <!-- <h1 style="margin-top: 24px">{{ date_range.start_date }} - {{ date_range.end_date }}</h1> -->
 
-    <a-row justify="end" type="flex" style="margin: 30px 0px">
+    <a-row justify="end" type="flex" style="margin: 60px 0px">
       <!-- this is a series of buttons -->
       <a-col>
         <a-range-picker @change="onChange" size="large" separator="-" />
@@ -47,8 +47,11 @@ var myChart = new Chart(ctx, majority_chart_config);
 export default {
   data() {
     return {
-      date_range: [],
-      majority_category:"The majority Category",
+      date_range: {
+        start_date : "",
+        end_date : "",
+      },
+      majority_category:"The majority category",
     };
   },
   methods: {
@@ -57,18 +60,9 @@ export default {
         start_date : dateString [0],
         end_date : dateString [1],
       };
-      // myChart.data.datasets[0].data = [1 ,2 ,3 ,4];
-      // myChart.data.datasets[0].data = [2 ,4 ,3 ,8];
-      // myChart.data.labels.push("2022-01-06");
-      // myChart.update();
-      // myChart.update();
-      // console.log(date, dateString);
-      // this.postAnalysis();
     },
     postAnalysis(date_range) {
       var app = this;
-      // console.log("date_range");
-      // console.log(date_range.start_date);
       axios
         .post(DEFAULT_ENDPOINT + "/analysis.php", date_range)
         .then(function (response) {
@@ -84,29 +78,34 @@ export default {
           }
           else if (response.data.majority_category_historical_report.code === "no majority"){
             message.error('No majority found in timeframe');
+            this.renderDefaultChart();
           }
           else{
             message.error('No data found in timeframe');
+            app.renderDefaultChart();
           }
         })
         .catch(function (err) {
           console.log(err);
         });
     },
-
+    renderDefaultChart(){
+      myChart.data.labels = ['date 1', 'date 2', 'date 3'];
+      myChart.data.datasets[0].data = [2 , 1, 3];
+      myChart.options.plugins.title.text = "Category Outbound Historical Data";
+      this.majority_category = "The majority category";
+      myChart.update();
+    },
     sentenceCase(text){
       return text && text[0].toUpperCase() + text.slice(1);
     },
-    // createChart(chart){
-      
-      
-    // }
   },
   mounted() {
       Chart.defaults.font.family =
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'";
       ctx = this.$refs.majority_category_chart;
       myChart = new Chart(ctx, majority_chart_config);
+
   },
 };
 </script>
