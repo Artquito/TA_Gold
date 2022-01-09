@@ -1,4 +1,4 @@
-# jap-frontend
+# TA_GOlD
 
 ## Project setup
 ```
