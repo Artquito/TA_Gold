@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 style="margin-top: 24px">{{ date_range[0] }} - {{ date_range[1] }}</h1>
+    <h1 style="margin-top: 24px">{{ date_range.start_date }} - {{ date_range.end_date }}</h1>
 
     <a-row justify="end" type="flex" style="margin: 30px 0px">
       <!-- this is a series of buttons -->
@@ -8,7 +8,8 @@
         <a-range-picker @change="onChange" size="large" separator="-" />
       </a-col>
       <a-col style="padding-left: 10px">
-        <a-button type="primary" size="large"
+        <a-button type="primary" size="large" 
+        @click="postAnalysis(date_range)"
           >Find Majority In Timeframe</a-button
         >
       </a-col>
@@ -20,10 +21,10 @@
         <!-- this is the styles if you want the card head to have a different color -->
         <!-- :headStyle="{background :'#1b5292', color :'#f0f2f5'}" -->
         <a-card size="large" title="Majority Category">
-          <span style="font-size: 14px"> Bracelet </span>
+          <span style="font-size: 14px"> {{majority_category}} </span>
         </a-card>
       </a-col>
-      <a-col flex="8">
+      <a-col flex="8" width="1158" height="385">
         <canvas
           width="300"
           height="100"
@@ -36,40 +37,65 @@
 </template>
 
 <script>
+import { message } from 'ant-design-vue';
 import Chart from "chart.js/auto";
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
-import majority_chart_config from "./category_chart"
+import majority_chart_config from "./majority_category_chart"
 const axios = require("axios");
-const ctx = "";
+var ctx = "";
 var myChart = new Chart(ctx, majority_chart_config);
 export default {
   data() {
     return {
       date_range: [],
+      majority_category:"The majority Category",
     };
   },
   methods: {
     onChange(date, dateString) {
-      this.date_range = dateString;
+      this.date_range = {
+        start_date : dateString [0],
+        end_date : dateString [1],
+      };
       // myChart.data.datasets[0].data = [1 ,2 ,3 ,4];
-      myChart.data.datasets[0].data = [2 ,4 ,3 ,8];
-      myChart.data.labels.push("2022-01-06");
-      myChart.update();
+      // myChart.data.datasets[0].data = [2 ,4 ,3 ,8];
+      // myChart.data.labels.push("2022-01-06");
+      // myChart.update();
       // myChart.update();
       // console.log(date, dateString);
       // this.postAnalysis();
     },
-    postAnalysis() {
-      // var app = this;
+    postAnalysis(date_range) {
+      var app = this;
+      // console.log("date_range");
+      // console.log(date_range.start_date);
       axios
-        .post(DEFAULT_ENDPOINT + "/analysis.php")
+        .post(DEFAULT_ENDPOINT + "/analysis.php", date_range)
         .then(function (response) {
-          console.log("this is the test response:");
           console.log(response);
+          //check if majority_data exist
+          if(response.data.majority_category_historical_report.code === "success"){
+            message.success('Majority found');
+            app.majority_category = app.sentenceCase(response.data.majority_category_historical_report.majority_category);
+            myChart.data.labels = response.data.majority_category_historical_report.outbound_date;
+            myChart.data.datasets[0].data = response.data.majority_category_historical_report.outbound_total_sales;
+            myChart.options.plugins.title.text = app.majority_category + " Outbound Historical Data";
+            myChart.update();
+          }
+          else if (response.data.majority_category_historical_report.code === "no majority"){
+            message.error('No majority found in timeframe');
+          }
+          else{
+            message.error('No data found in timeframe');
+          }
         })
         .catch(function (err) {
           console.log(err);
         });
+    },
+
+    sentenceCase(text){
+      return text && text[0].toUpperCase() + text.slice(1);
     },
     // createChart(chart){
       
@@ -79,7 +105,7 @@ export default {
   mounted() {
       Chart.defaults.font.family =
         "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'";
-      const ctx = this.$refs.majority_category_chart;
+      ctx = this.$refs.majority_category_chart;
       myChart = new Chart(ctx, majority_chart_config);
   },
 };
