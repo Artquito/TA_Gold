@@ -3,6 +3,7 @@ import Index from "@/views/index";
 import Master from "@/modules/master";
 import Item_Check from "@/modules/item_check";
 import Dashboard from "@/modules/dashboard";
+import Outbound from "@/modules/outbound"
 import Login from "@/views/login.vue";
 
 const routes = [
@@ -10,7 +11,7 @@ const routes = [
     path: "/",
     name: "Index",
     component: Index,
-    children: [Dashboard.route, Master.route, Item_Check.route]
+    children: [Dashboard.route, Master.route, Item_Check.route, Outbound.route]
   },
   {
     path: "/login",
