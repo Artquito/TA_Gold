@@ -16,7 +16,7 @@
     </a-row>
 
     <!-- this is the data display -->
-    <a-row type="flex">
+    <a-row type="flex" height="487">
       <a-col flex="1.5" style="padding-right: 60px">
         <!-- this is the styles if you want the card head to have a different color -->
         <!-- :headStyle="{background :'#1b5292', color :'#f0f2f5'}" -->
@@ -24,12 +24,12 @@
           <span style="font-size: 14px"> {{majority_category}} </span>
         </a-card>
       </a-col>
-      <a-col flex="8" width="1158" height="385">
+      <a-col flex="8" width="1158" style="border: 1px solid #f0f0f0">
         <canvas
+        v-if="true"
           width="300"
           height="100"
           ref="majority_category_chart"
-          style="border: 1px solid #f0f0f0"
         ></canvas>
       </a-col>
     </a-row>
