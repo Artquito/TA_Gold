@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import formPelanggan from "./forms/master_pelanggan";
+import formPelanggan from "./forms/master_item";
 import {
   AppstoreOutlined,
   CloudDownloadOutlined,

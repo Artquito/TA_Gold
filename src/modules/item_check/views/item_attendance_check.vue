@@ -343,7 +343,7 @@ export default {
 
     //the paho controls
     onConnectionLost: function (responseObject) {
-      this.$isConnected = false;
+      this.$setConnection(false);
       console.log("disconnected");
       console.log("onConnectionLost:" + responseObject.errorMessage);
     },
@@ -387,7 +387,7 @@ export default {
     onConnect: function onConnect() {
       // Once a connection has been made, make a subscription and send a message.
       console.log("onConnect");
-      this.$isConnected = true;
+      this.$setConnection(true);
       this.$globalClient.subscribe(this.topic);
       this.$globalClient.publish(this.device_topic, "1", 1, true);
 
@@ -404,9 +404,17 @@ export default {
       this.$globalClient.onMessageArrived = this.onMessageArrived;
     },
   },
-  created() {
-    this.connect();
-    this.getTray();
+  mounted() {
+    this.$nextTick(()=>{
+      if(!this.$isConnected){
+      this.connect();
+      }
+      else{
+         this.$globalClient.subscribe("test");
+      }
+      this.getTray();
+
+    });
   },
 };
 </script>

@@ -16,3 +16,6 @@ app.config.globalProperties.$globalClient = new Paho.Client(
     "webclient/item_master/01" + generatedCID
 );
 app.config.globalProperties.$isConnected = false;
+app.config.globalProperties.$setConnection = function(state){
+    app.config.globalProperties.$isConnected = state;
+}
