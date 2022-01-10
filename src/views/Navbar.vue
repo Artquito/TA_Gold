@@ -2,20 +2,20 @@
   <div>
     <a-layout-header
       style="
-        padding: 15px 0px 0px 70px;
         border-bottom: 2px solid #1b5292;
         background-color: white;
       "
     >
-      <a-typography-title :level="3" style="margin: 0">
-        Boyer Moore Gold App
-      </a-typography-title>
+        <a-typography-title :level="3" style="margin:0; line-height: 64px">
+          Boyer Moore Gold App
+        </a-typography-title>
+      
     </a-layout-header>
 
     <a-menu
       v-model:selectedKeys="current"
       mode="horizontal"
-      style="padding: 0px 50px; margin-bottom: 0px"
+      style="padding: 0px 30px; margin-bottom: 0px"
     >
       <a-menu-item key="/dashboard">Dashboard</a-menu-item>
       <a-sub-menu key="/master">
