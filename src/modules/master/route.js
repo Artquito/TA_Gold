@@ -1,7 +1,7 @@
 import Module from "./module.vue";
-import ProductList from "./views/list_products.vue";
-import SupplierList from "./views/list_supplier.vue";
-import PelangganList from "./views/list_pelanggan";
+import List_Tray from "./views/list_tray.vue";
+import List_Supplier from "./views/list_supplier.vue";
+import List_Item from "./views/list_item";
 
 const routes = {
     path: "master",
@@ -9,12 +9,12 @@ const routes = {
     children: [
         
         {
-            path: "barang",
+            path: "tray",
             component: Module,
             children: [
                 {
                     path: "",
-                    component: ProductList,
+                    component: List_Tray,
                 }
             
             ],
@@ -25,18 +25,18 @@ const routes = {
             children: [
                 {
                     path: "",
-                    component: SupplierList,
+                    component: List_Supplier,
                 }
             
             ],
         },
         {
-            path: "pelanggan",
+            path: "item",
             component: Module,
             children: [
                 {
                     path: "",
-                    component: PelangganList,
+                    component: List_Item,
                 }
             
             ], 

@@ -136,7 +136,6 @@ export default {
         item_status: "",
       },
       topic: "test",
-      isConnected: false,
     };
   },
   props: ["cApiParameters", "cIsInputing"],
@@ -197,7 +196,8 @@ export default {
     handleForm: function (action, isInputing) {
       // this.$emit("formAction");
       if (action == "close") {
-        this.$globalClient.disconnect();
+        // this.$globalClient.disconnect();
+        //change this to  unsubscribe
         this.mVisible = false;
         this.apiParameters = {
           id: "",
@@ -222,7 +222,7 @@ export default {
       }
     },
     onConnectionLost: function (responseObject) {
-      this.$isConnected = false;
+      this.$setConnection(false);
       console.log("disconnected");
       console.log("onConnectionLost:" + responseObject.errorMessage);
     },
@@ -238,7 +238,7 @@ export default {
     onConnect: function onConnect() {
       // Once a connection has been made, make a subscription and send a message.
       console.log("onConnect");
-      this.$isConnected = true;
+      this.$setConnection(true);
       this.$globalClient.subscribe(this.topic);
       // var message = new Paho.Message("Hello");
       // message.destinationName = this.topic;
@@ -253,7 +253,16 @@ export default {
       this.$globalClient.onMessageArrived = this.onMessageArrived;
     },
   },
-  created() {
+  mounted() {
+    console.log(this.$isConnected);
+    this.$nextTick(()=>{
+      if(!this.$isConnected){
+      this.connect();
+      }
+      else{
+         this.$globalClient.subscribe(this.topic);
+      }
+    })
   },
   components: {
     PlusOutlined,

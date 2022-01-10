@@ -23,32 +23,23 @@
           <AppstoreOutlined />
         </template>
         <template #title>Master Data</template>
-        <a-menu-item key="/master/barang">Master Tray</a-menu-item>
+        <a-menu-item key="/master/tray">Master Tray</a-menu-item>
         <a-menu-item key="/master/supplier">Master Supplier</a-menu-item>
-        <a-menu-item key="/master/pelanggan">Master Item</a-menu-item>
+        <a-menu-item key="/master/item">Master Item</a-menu-item>
       </a-sub-menu>
       <a-sub-menu key="/order">
         <template #icon>
           <CarryOutOutlined />
         </template>
         <template #title>Item Check</template>
-        <a-menu-item key="/order/pembelian">Item Attendance Check</a-menu-item>
-        <!-- <a-menu-item key="/order/pembelian/baru"
-          >Order Pembelian Baru</a-menu-item
-        > -->
+        <a-menu-item key="/attendance/check">Item Attendance Check</a-menu-item>
       </a-sub-menu>
-      <a-sub-menu key="order_form_pos">
+      <a-sub-menu key="/outbound/item">
         <template #icon>
           <ShoppingCartOutlined />
         </template>
         <template #title>Outbound</template>
-        <a-menu-item key="order_form_pos">Outbound Items</a-menu-item>
-        <!-- <a-menu-item key="order_form_penjualan"
-          >Order Penjualan Baru</a-menu-item
-        >
-        <a-menu-item key="order_list_penjualan"
-          >Daftar Order Penjualan</a-menu-item
-        > -->
+        <a-menu-item key="/outbound/item">Outbound Items</a-menu-item>
       </a-sub-menu>
     </a-menu>
   </div>
