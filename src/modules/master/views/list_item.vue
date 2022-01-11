@@ -7,7 +7,7 @@
           Master Data
         </a-breadcrumb-item>
         <a-breadcrumb-item>
-          <router-link to="pelanggan"> Master Item </router-link>
+          <router-link to="item"> Master Item </router-link>
         </a-breadcrumb-item>
       </a-breadcrumb>
     </div>
