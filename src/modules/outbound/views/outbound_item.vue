@@ -6,25 +6,29 @@
     </a-breadcrumb-item>
     <a-breadcrumb-item>Items</a-breadcrumb-item>
   </a-breadcrumb>
-
+  {{input}}
+  <div style="width:300px">
+  <a-input v-model:value="input"></a-input>
+  </div>
   <!-- the  controls -->
   <a-row type="flex" justify="end" style="margin-bottom: 30px">
     <a-col flex="10">
       <a-input-search
         justify="right"
         placeholder="Search item"
+        v-model:value="search_bar"
         style="width: 200px"
         size="medium"
       ></a-input-search>
     </a-col>
     <a-col flex="0">
       <a-space :size="12">
-        <a-button type="primary">Add Item</a-button>
+        <a-button type="primary" @click="handleTable('add')">Add Item</a-button>
         <a-popconfirm
           title="Are you sure you want to post the report?"
           ok-text="Yes"
           cancel-text="No"
-          @confirm="postReport(true)"
+          @confirm="postReport()"
         >
           <a-button> Post Report </a-button>
         </a-popconfirm>
@@ -32,11 +36,11 @@
     </a-col>
   </a-row>
 
-  <a-table :dataSource="data" :columns="columns" bordered style="padding-bottom: 50px">
-    <template #action="">
+  <a-table :dataSource="filteredScannedData" :columns="columns" bordered style="padding-bottom: 50px">
+    <template #action="record">
       <div>
         <span>
-          <a-button block type="primary">Cancel</a-button>
+          <a-button block type="primary" @click="handleTable('remove', record)">Cancel</a-button>
         </span>
       </div>
     </template>
@@ -54,21 +58,36 @@
 
 <script>
 import { ShoppingCartOutlined } from "@ant-design/icons-vue";
+import { DEFAULT_ENDPOINT } from "@/core/api.js";
+import { message } from 'ant-design-vue';
+const axios = require("axios");
 export default {
   components: {
     ShoppingCartOutlined,
   },
   data() {
     return {
+      search_bar:"",
+      input:"",
       data:[
-        {
-          item_rfid_uid:"0878",
-          item_name:"test",
-          item_type:"test",
-          item_weight:1.6,
-          item_grade:12,
-          item_price:2000000,
-        }
+        // {
+        //   id:5,
+        //   item_rfid_uid:"0878",
+        //   item_name:"test",
+        //   item_type:"test",
+        //   item_weight:1.6,
+        //   item_grade:12,
+        //   item_price:2000000,
+        // },
+        // {
+        //   id:4,
+        //   item_rfid_uid:"0878",
+        //   item_name:"test",
+        //   item_type:"test",
+        //   item_weight:1.6,
+        //   item_grade:12,
+        //   item_price:2000000,
+        // }
       ],
       columns:[
         {
@@ -118,7 +137,72 @@ export default {
       ]
     };
   },
+  computed: {
+    filteredScannedData() {
+      return this.data.filter((tableData) => {
+        return tableData.item_name
+          .toLowerCase()
+          .includes(this.search_bar.toLowerCase());
+      });
+    },
+  },
   methods: {
+    handleTable(operation, row){
+      if(operation === 'add'){
+        this.getScannedItem();
+        
+      }
+      else if(operation === 'remove'){
+        this.data.splice(row.index, 1);
+      }
+    },
+    postReport(){
+      const app = this;
+      var item_id =[];
+      for(var item in app.data){
+        item_id.push({item_id:app.data[item].id});
+      }
+      axios.post(DEFAULT_ENDPOINT + "/post_outbound.php", item_id)
+      .then(response=>{
+        console.log(response);
+      })
+      .catch(err=>{
+        console.log(err);
+      });
+    },
+    getScannedItem(){
+      var app = this;
+      var getParameter = "?item_rfid_uid=" + this.input;
+      axios.get(DEFAULT_ENDPOINT + "/get_scanned_item.php" + getParameter)
+        .then(response =>{
+          console.log(response.data);
+          if(response.data.code === 'success'){
+            const check = app.checkIfExist(response.data.item.item_rfid_uid);
+            if(check === 'valid'){
+              app.data.push(response.data.item);
+            message.success(response.data.message);
+            }
+            else{
+              message.warning('Item has already been scanned')
+            }
+          }
+          else{
+            message.error(response.data.message);
+          }
+        })
+        .catch(err =>{
+          console.log(err);
+        });
+    },
+    checkIfExist(item_rfid_uid){
+      var status ="valid";
+      this.data.forEach((obj) => {
+        if (obj.item_rfid_uid === item_rfid_uid) {
+          status = 'duplicate'
+          } 
+      });
+      return status;
+    },
     formatRupiah: function (angka, prefix) {
       angka = angka.toString();
       var number_string = angka.replace(/[^,\d]/g, "").toString();
