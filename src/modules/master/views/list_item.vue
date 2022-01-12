@@ -97,6 +97,12 @@
           </span>
         </div>
       </template>
+      <template #item_weight="{ text }">
+        {{ text + " gr" }}
+      </template>
+      <template #item_grade="{ text }">
+        {{ text + " karat" }}
+      </template>
       <template #item_price="{ text }">
         {{ formatRupiah(text, "Rp.") }}
       </template>
@@ -120,7 +126,7 @@ export default {
     InboxOutlined,
     "form-pelanggan": formPelanggan,
   },
-  props:['test'],
+  props: ["test"],
   data() {
     return {
       search_bar: "",
@@ -138,7 +144,7 @@ export default {
           title: "ID",
           dataIndex: "id",
           Key: "id",
-          width: 127,
+          width: 100,
         },
         {
           title: "Item RFID UID",
@@ -153,6 +159,7 @@ export default {
         {
           title: "Type",
           dataIndex: "item_type",
+          width: 220,
         },
         {
           title: "Price",
@@ -162,23 +169,29 @@ export default {
         {
           title: "Grade",
           dataIndex: "item_grade",
+          slots: { customRender: "item_grade" },
+          width: 100,
         },
         {
           title: "Weight",
           dataIndex: "item_weight",
+          slots: { customRender: "item_weight" },
+          width: 100,
         },
         {
           title: "Supplier",
           dataIndex: "item_supplier",
+          width: 220,
         },
         {
           title: "Date of Arrival",
           dataIndex: "item_arrival",
-          width: 200,
+          width: 220,
         },
         {
           title: "Status",
           dataIndex: "item_status",
+          width: 100,
         },
       ],
     };
