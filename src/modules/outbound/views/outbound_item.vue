@@ -267,19 +267,19 @@ export default {
       console.log("onConnectionLost:" + responseObject.errorMessage);
     },
     setupPaho(){
-      message.success('Setup complete')
       this.$globalClient.onConnectionLost = this.onConnectionLost;
       this.$globalClient.onMessageArrived = this.onMessageArrived;
       this.$setConnection(true);
       this.$globalClient.subscribe(this.topic);
       this.$globalClient.publish(this.device_topic, "1", 1, true);
+      message.success('Otubound setup complete');
     },
     connect(){
       this.$globalClient.connect({
         onSuccess:this.setupPaho,
         keepAliveInterval:5
       });
-    }
+    },
   },
   mounted() {
     this.$nextTick(()=>{

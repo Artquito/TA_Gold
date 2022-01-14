@@ -115,7 +115,7 @@
 
 <script>
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
-// import { notification } from "ant-design-vue";
+import { message } from "ant-design-vue";
 import { PlusOutlined, ScanOutlined } from "@ant-design/icons-vue";
 // import { Alert } from "ant-design-vue";
 const axios = require("axios");
@@ -230,37 +230,36 @@ export default {
       if (this.apiParameters.item_rfid_uid == "") {
         this.apiParameters.item_rfid_uid = message.payloadString;
         this.mVisible = true;
+        message.success("Item scanned");
         console.log("onMessageArrived:" + message.payloadString);
       } else {
-        console.log("Input Bussy");
+        message.warning("Input busy");
       }
     },
-    onConnect: function onConnect() {
-      // Once a connection has been made, make a subscription and send a message.
-      console.log("onConnect");
-      this.$setConnection(true);
-      this.$globalClient.subscribe(this.topic);
-      // var message = new Paho.Message("Hello");
-      // message.destinationName = this.topic;
-      // this.client.send(message);
-    },
-    connect: function () {
-      this.$globalClient.connect({
-        onSuccess: this.onConnect,
-        keepAliveInterval: 5,
-      });
+    setupPaho(){
       this.$globalClient.onConnectionLost = this.onConnectionLost;
       this.$globalClient.onMessageArrived = this.onMessageArrived;
+      this.$setConnection(true);
+      this.$globalClient.subscribe(this.topic);
+      this.$globalClient.publish(this.device_topic, "1", 1, true);
+      message.success('Master item setup complete');
+    },
+    connect(){
+      this.$globalClient.connect({
+        onSuccess:this.setupPaho,
+        keepAliveInterval:5
+      });
     },
   },
   mounted() {
     console.log(this.$isConnected);
+    message.success("Hello Mate");
     this.$nextTick(()=>{
       if(!this.$isConnected){
       this.connect();
       }
       else{
-         this.$globalClient.subscribe(this.topic);
+         this.setupPaho();
       }
     })
   },
