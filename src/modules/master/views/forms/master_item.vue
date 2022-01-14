@@ -31,9 +31,9 @@
         </a-row>
         <a-row type="flex" justify="center" align="middle">
           <a-col>
-            <a-typography-title :level="3" style="margin-top: 40px"
-              >Please Scan Your Card to Continue</a-typography-title
-            >
+            <a-typography-title :level="3" style="margin-top: 40px">
+              Please Scan Your Card to Continue
+            </a-typography-title>
           </a-col>
         </a-row>
       </div>
