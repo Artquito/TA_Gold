@@ -23,7 +23,7 @@
     </a-col>
     <a-col flex="0">
       <a-space :size="12">
-        <a-button type="primary" @click="handleTable('add')">Add Item</a-button>
+        <a-button type="primary" @click="input_modal_is_on=true">Add Item</a-button>
         <a-popconfirm
           title="Are you sure you want to post the report?"
           ok-text="Yes"
@@ -35,7 +35,32 @@
       </a-space>
     </a-col>
   </a-row>
-
+  <!-- the add item instruction -->
+  <a-modal 
+  :visible="input_modal_is_on"
+  title="Add Outbound Items"
+  :footer="null"
+  @cancel="input_modal_is_on=false">
+    <a-row type="flex" justify="center" align="middle">
+      <a-col>
+        <ScanOutlined style="font-size: 10em; color: #08c" />
+      </a-col>
+      <a-col>
+        <a-typography-title :level="3" akign style="margin-top: 40px; margin-bottom:0; text-align:center;">
+          Put Item Tag In Front of Scanner to Add Item to List
+        </a-typography-title>
+      </a-col>
+    </a-row>
+    <a-divider style="margin:12px 0"/>
+    <a-row type="flex" justify="left" align="middle">
+      <a-col>
+        <a-typography-paragraph style="width: 350px;margin-bottom:0;"> 
+          <strong>Note :</strong> You can just scan the item tag without needing to click the add button again
+        </a-typography-paragraph>
+      </a-col>
+    </a-row>
+  </a-modal>
+  <!-- the table -->
   <a-table :dataSource="filteredScannedData" :columns="columns" bordered style="padding-bottom: 50px">
     <template #action="record">
       <div>
@@ -57,16 +82,21 @@
 </template>
 
 <script>
-import { ShoppingCartOutlined } from "@ant-design/icons-vue";
+import { ShoppingCartOutlined,ScanOutlined } from "@ant-design/icons-vue";
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
 import { message } from 'ant-design-vue';
 const axios = require("axios");
 export default {
   components: {
     ShoppingCartOutlined,
+    ScanOutlined,
   },
   data() {
     return {
+      input_modal_is_on:false,
+
+      topic: "test",
+      device_topic: "ESP8266Client/reader01/test",
       search_bar:"",
       input:"",
       data:[
@@ -149,7 +179,7 @@ export default {
   methods: {
     handleTable(operation, row){
       if(operation === 'add'){
-        this.getScannedItem();
+        this.getScannedItem(this.input);
         
       }
       else if(operation === 'remove'){
@@ -164,23 +194,29 @@ export default {
       }
       axios.post(DEFAULT_ENDPOINT + "/post_outbound.php", item_id)
       .then(response=>{
-        console.log(response);
+        let code = response.data.code;
+        if(code === "success"){
+          message.success("Report successfully posted");
+          app.data = [];
+        }
+        else{
+          message.error("Something went wrong, try again!");
+        }
       })
       .catch(err=>{
         console.log(err);
       });
     },
-    getScannedItem(){
+    getScannedItem(input){
       var app = this;
-      var getParameter = "?item_rfid_uid=" + this.input;
+      var getParameter = "?item_rfid_uid=" + input;
       axios.get(DEFAULT_ENDPOINT + "/get_scanned_item.php" + getParameter)
         .then(response =>{
-          console.log(response.data);
           if(response.data.code === 'success'){
-            const check = app.checkIfExist(response.data.item.item_rfid_uid);
+            const check = app.checkIfExist(this.data,response.data.item.item_rfid_uid);
             if(check === 'valid'){
               app.data.push(response.data.item);
-            message.success(response.data.message);
+              message.success(response.data.message);
             }
             else{
               message.warning('Item has already been scanned')
@@ -194,9 +230,9 @@ export default {
           console.log(err);
         });
     },
-    checkIfExist(item_rfid_uid){
+    checkIfExist(data,item_rfid_uid){
       var status ="valid";
-      this.data.forEach((obj) => {
+      data.forEach((obj) => {
         if (obj.item_rfid_uid === item_rfid_uid) {
           status = 'duplicate'
           } 
@@ -221,6 +257,39 @@ export default {
       rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
       return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
     },
+    onMessageArrived(message){
+      var item_rfid_uid = message.payloadString;
+      this.getScannedItem(item_rfid_uid);
+    },
+    onConnectionLost: function (responseObject) {
+      this.$setConnection(false);
+      message.warning('Disconected');
+      console.log("onConnectionLost:" + responseObject.errorMessage);
+    },
+    setupPaho(){
+      message.success('Setup complete')
+      this.$globalClient.onConnectionLost = this.onConnectionLost;
+      this.$globalClient.onMessageArrived = this.onMessageArrived;
+      this.$setConnection(true);
+      this.$globalClient.subscribe(this.topic);
+      this.$globalClient.publish(this.device_topic, "1", 1, true);
+    },
+    connect(){
+      this.$globalClient.connect({
+        onSuccess:this.setupPaho,
+        keepAliveInterval:5
+      });
+    }
+  },
+  mounted() {
+    this.$nextTick(()=>{
+      if(!this.$isConnected){
+      this.connect();
+      }
+      else{
+         this.setupPaho();
+      }
+    });
   },
 };
 </script>
