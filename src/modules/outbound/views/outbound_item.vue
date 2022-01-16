@@ -4,7 +4,7 @@
       <ShoppingCartOutlined />
       Outbound
     </a-breadcrumb-item>
-    <a-breadcrumb-item>Items</a-breadcrumb-item>
+    <a-breadcrumb-item>Outbound Items</a-breadcrumb-item>
   </a-breadcrumb>
   <!-- the  controls -->
   <a-row type="flex" justify="end" style="margin-bottom: 30px">
