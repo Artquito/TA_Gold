@@ -110,7 +110,7 @@
 <script>
 import { AppstoreOutlined } from "@ant-design/icons-vue";
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
-import { notification } from "ant-design-vue";
+import { notification, message } from "ant-design-vue";
 const axios = require("axios");
 export default {
   components: {
@@ -384,24 +384,19 @@ export default {
         this.postReport(false);
       }
     },
-    onConnect: function onConnect() {
-      // Once a connection has been made, make a subscription and send a message.
-      console.log("onConnect");
+    setupPaho(){
+      this.$globalClient.onConnectionLost = this.onConnectionLost;
+      this.$globalClient.onMessageArrived = this.onMessageArrived;
       this.$setConnection(true);
       this.$globalClient.subscribe(this.topic);
       this.$globalClient.publish(this.device_topic, "1", 1, true);
-
-      // var message = new Paho.Message("Hello");
-      // message.destinationName = this.topic;
-      // this.client.send(message);
+      message.success('Item attendance setup complete');
     },
-    connect: function () {
+    connect(){
       this.$globalClient.connect({
-        onSuccess: this.onConnect,
-        keepAliveInterval: 5,
+        onSuccess:this.setupPaho,
+        keepAliveInterval:5
       });
-      this.$globalClient.onConnectionLost = this.onConnectionLost;
-      this.$globalClient.onMessageArrived = this.onMessageArrived;
     },
   },
   mounted() {
@@ -410,7 +405,7 @@ export default {
       this.connect();
       }
       else{
-         this.$globalClient.subscribe("test");
+         this.setupPaho();
       }
       this.getTray();
 
