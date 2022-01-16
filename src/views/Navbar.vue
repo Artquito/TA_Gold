@@ -34,12 +34,13 @@
         <template #title>Item Check</template>
         <a-menu-item key="/attendance/check">Item Attendance Check</a-menu-item>
       </a-sub-menu>
-      <a-sub-menu key="/outbound/item">
+      <a-sub-menu key="/outbound">
         <template #icon>
           <ShoppingCartOutlined />
         </template>
         <template #title>Outbound</template>
         <a-menu-item key="/outbound/item">Outbound Items</a-menu-item>
+        <a-menu-item key="/outbound/report">Outbound Report</a-menu-item>
       </a-sub-menu>
     </a-menu>
   </div>
