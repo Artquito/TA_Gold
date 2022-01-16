@@ -24,81 +24,41 @@
       </a-col>
       <a-col flex="0">
         <a-space :size="12">
-          <a-button v-if="false" type="primary" @click="importIsVisible = true">
-            <CloudDownloadOutlined />
-            Import CSV
+          <a-button type="primary" @click="handleFormModal('open')">
+            <PlusOutlined />
+            <span>Add Item</span>
           </a-button>
+          <!-- this is for the supplier button -->
           <form-pelanggan
-            :cIsInputing="true"
-            @getData="getData()"
+            :modal_visible="modal_visible"
+            :api_parameters="api_parameters"
+            @handle-form-modal="handleFormModal($event)"
+            @get-data="getData()"
+            @reset-parameters="resetParameters()"
           ></form-pelanggan>
-          <!-- this is for the supplier form add -->
         </a-space>
       </a-col>
     </a-row>
-    <!-- this is the import csv button -->
-    <a-modal
-      title="Upload File Excel"
-      v-model:visible="importIsVisible"
-      :footer="null"
-    >
-      <a-upload-dragger
-        v-model:fileList="fileList"
-        name="file"
-        :multiple="false"
-        action=""
-        @change="handleChange"
-      >
-        <p class="ant-upload-drag-icon">
-          <inbox-outlined></inbox-outlined>
-        </p>
-        <p class="ant-upload-text">Upload File Excel di Sini</p>
-        <p class="ant-upload-hint">Hanya mendukung unggahan tunggal</p>
-      </a-upload-dragger>
-      <a-divider />
-      <a-row type="flex">
-        <a-col :flex="1">
-          <a-button type="primary">Unggah</a-button>
-        </a-col>
-        <a-col :flex="20">
-          <a-button type="dashed">Download File Contoh</a-button>
-        </a-col>
-        <a-col :flex="0">
-          <a-button
-            type="regular"
-            @click="
-              {
-                importIsVisible = false;
-                fileList = [];
-              }
-            "
-            >Batal</a-button
-          >
-        </a-col>
-      </a-row>
-    </a-modal>
-
+    <!-- this is the table -->
     <a-table
       :dataSource="filteredData"
       :columns="columns"
-      :scroll="{ x: 1800 }"
+      :scroll="{ x: 1900 }"
       bordered
-      class="change-color"
       style="padding-bottom: 50px"
     >
       <template #action="{ record }">
-        <div>
           <span>
-            <form-pelanggan
-              :cIsInputing="false"
-              :cApiParameters="record"
-              @getData="getData()"
-            ></form-pelanggan>
+            <a-button @click="handleFormModal('edit',record)" block>
+              <span>Edit</span>
+            </a-button>
           </span>
-        </div>
       </template>
       <template #item_weight="{ text }">
         {{ text + " gr" }}
+      </template>
+      <template #item_supplier ="{ text }">
+        {{capitalizeName(text)}}
       </template>
       <template #item_grade="{ text }">
         {{ text + " karat" }}
@@ -114,24 +74,32 @@
 import formPelanggan from "./forms/master_item";
 import {
   AppstoreOutlined,
-  CloudDownloadOutlined,
-  InboxOutlined,
+  PlusOutlined,
 } from "@ant-design/icons-vue";
 import { DEFAULT_ENDPOINT } from "@/core/api.js";
 const axios = require("axios");
 export default {
   components: {
     AppstoreOutlined,
-    CloudDownloadOutlined,
-    InboxOutlined,
+    PlusOutlined,
     "form-pelanggan": formPelanggan,
   },
-  props: ["test"],
   data() {
     return {
+      api_parameters: {
+        id: "",
+        item_rfid_uid: "",
+        item_name: "",
+        item_type: "",
+        item_price: "",
+        item_grade: "",
+        item_weight: "",
+        item_supplier: "",
+        item_arrival: "",
+        item_status: "",
+      },
+      modal_visible:false,
       search_bar: "",
-      importIsVisible: false,
-      fileList: [],
       data: [],
       columns: [
         {
@@ -139,6 +107,7 @@ export default {
           dataIndex: "action",
           key: "action",
           slots: { customRender: "action" },
+          width: 100,
         },
         {
           title: "ID",
@@ -179,8 +148,14 @@ export default {
           width: 100,
         },
         {
+          title:"Tray",
+          dataIndex: 'item_tray_id',
+          width:100,
+        },
+        {
           title: "Supplier",
           dataIndex: "item_supplier",
+          slots: { customRender: "item_supplier" },
           width: 220,
         },
         {
@@ -206,7 +181,51 @@ export default {
     },
   },
   methods: {
-    formatRupiah: function (angka, prefix) {
+    handleFormModal(task, record){
+      if(task === "edit"){
+        if (record !== "undefined") {
+          let data = JSON.parse(JSON.stringify(record)); // this turns the recorded data index into json format
+          data.item_supplier = data.item_supplier_id;
+          delete data["item_supplier_id"]
+          this.api_parameters = data; //assigns it to the local api parameters
+        }
+      }
+      if(task === "open" || task === "edit"){
+        // console.log(this.api_parameters);
+        this.modal_visible = true;
+      }
+      else{
+        this.modal_visible =false;
+        this.resetParameters();
+      }
+    },
+    getData: function () {
+      var app = this;
+
+      axios
+        .get(DEFAULT_ENDPOINT + "/item.php")
+        .then(function (response) {
+          app.data = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    resetParameters(){
+      this.api_parameters = {
+          id: "",
+          item_rfid_uid: "",
+          item_name: "",
+          item_type: "",
+          item_price: "",
+          item_grade: "",
+          item_weight: "",
+          item_supplier: "",
+          item_arrival: "",
+          item_status: "",
+        };
+    },
+    formatRupiah(angka, prefix) {
       angka = angka.toString();
       var number_string = angka.replace(/[^,\d]/g, "").toString();
       var split = number_string.split(",");
@@ -224,19 +243,12 @@ export default {
       rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
       return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
     },
-    getData: function () {
-      var app = this;
-
-      axios
-        .get(DEFAULT_ENDPOINT + "/item.php")
-        .then(function (response) {
-          app.data = response.data;
-          console.log("this is the mutation");
-          console.log(response);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    capitalizeName(name){
+      let altered_text = name.split(" ");
+      for(name in altered_text){
+        altered_text[name] = altered_text[name][0].toUpperCase() + altered_text[name].substr(1);
+      }
+      return altered_text.join(" "); 
     },
   },
   created() {

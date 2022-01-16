@@ -6,10 +6,6 @@
     </a-breadcrumb-item>
     <a-breadcrumb-item>Items</a-breadcrumb-item>
   </a-breadcrumb>
-  {{input}}
-  <div style="width:300px">
-  <a-input v-model:value="input"></a-input>
-  </div>
   <!-- the  controls -->
   <a-row type="flex" justify="end" style="margin-bottom: 30px">
     <a-col flex="10">
