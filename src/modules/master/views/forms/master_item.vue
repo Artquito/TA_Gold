@@ -2,7 +2,7 @@
   <div>
     <a-modal
       :visible="modal_visible"
-      title="Form Supplier"
+      title="Item Form"
       :footer="null"
       @cancel="handleForm('close')"
     >

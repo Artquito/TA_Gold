@@ -23,22 +23,20 @@
         />
       </a-col>
       <a-col flex="0">
-        <a-space :size="12">
           <a-button type="primary" @click="handleFormModal('open')">
             <PlusOutlined />
             <span>Add Item</span>
           </a-button>
-          <!-- this is for the supplier button -->
-          <form-pelanggan
-            :modal_visible="modal_visible"
-            :api_parameters="api_parameters"
-            @handle-form-modal="handleFormModal($event)"
-            @get-data="getData()"
-            @reset-parameters="resetParameters()"
-          ></form-pelanggan>
-        </a-space>
       </a-col>
     </a-row>
+    <!-- this is the modal form -->
+    <form-pelanggan
+      :modal_visible="modal_visible"
+      :api_parameters="api_parameters"
+      @handle-form-modal="handleFormModal($event)"
+      @get-data="getData()"
+      @reset-parameters="resetParameters()"
+    ></form-pelanggan>
     <!-- this is the table -->
     <a-table
       :dataSource="filteredData"
