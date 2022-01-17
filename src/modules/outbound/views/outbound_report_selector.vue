@@ -55,8 +55,9 @@
                 >
               </a-descriptions>
             </li>
-            <li>
-              <a-button :block="true" type="primary">Details</a-button>
+            <li class="details">
+              <a @click="showDetails()">more</a>
+              <a-button v-if="false" :block="true" type="primary">Details</a-button>
               <!-- <a-popconfirm
                 class="button"
                 ok-text="Yes"
@@ -91,6 +92,7 @@ export default {
     return {
       search_bar: "",
       cancel_warning_message: "",
+      user_id:"1",
       pagination: {
         onChange(page) {
           console.log(page);
@@ -129,8 +131,8 @@ export default {
     };
   },
   methods: {
-    test() {
-      console.log("hello there");
+    showDetails() {
+      this.$router.push({path:`report/${this.user_id}`});
     },
   },
 };
@@ -150,5 +152,8 @@ export default {
 .card-content .button {
   width: 118px;
   margin-right: 10px;
+}
+.details{
+  text-align: right;
 }
 </style>
