@@ -12,12 +12,16 @@ const routes = {
         },
         {
             path:"report",
-            component:Outbound_Report_Selector,
+            component:Module,
             children:[
                 {
-                    path:":id",
+                    path:"",
                     component:Outbound_Report_Selector
-                }
+                },
+                {
+                    path:":id",
+                    component:Outbound_Inserter
+                },
             ]
         }
     ],
