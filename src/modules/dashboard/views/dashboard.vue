@@ -78,7 +78,7 @@ export default {
           }
           else if (response.data.majority_category_historical_report.code === "no majority"){
             message.error('No majority found in timeframe');
-            this.renderDefaultChart();
+            app.renderDefaultChart();
           }
           else{
             message.error('No data found in timeframe');
