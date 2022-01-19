@@ -62,7 +62,7 @@
         {{ text + " karat" }}
       </template>
       <template #item_price="{ text }">
-        {{ formatRupiah(text, "Rp.") }}
+        {{ formatRupiah(text, "IDR ") }}
       </template>
     </a-table>
   </div>
@@ -239,7 +239,7 @@ export default {
       }
 
       rupiah = split[1] != undefined ? rupiah + "," + split[1] : rupiah;
-      return prefix == undefined ? rupiah : rupiah ? "Rp. " + rupiah : "";
+      return prefix == undefined ? rupiah : rupiah ? "IDR " + rupiah : "";
     },
     capitalizeName(name){
       let altered_text = name.split(" ");
